@@ -1,0 +1,5 @@
+this is the requirements file in the backend 
+python 
+flask 
+postgresql
+wrezek security

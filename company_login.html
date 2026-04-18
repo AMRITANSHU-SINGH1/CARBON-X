@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Login | Carbon-X</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+    <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="bg-slate-800 p-8 rounded-xl w-full max-w-md">
+            <a href="index.html" class="text-emerald-400 hover:underline">← Back to Home</a>
+            <h1 class="text-2xl font-bold mt-4 mb-6">Company Login </h1>
+
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">Email</label>
+                    <input type="email" id="email" required class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm mb-1">Password</label>
+                    <input type="password" id="password" required class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 py-2 rounded hover:bg-emerald-500">Login</button>
+                <p id="errorMsg" class="text-red-400 text-sm mt-3 hidden"></p>
+            </form>
+
+            <p class="mt-4 text-center text-slate-400">
+                Don't have an account? <a href="company_register.html" class="text-emerald-400">Register</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Simple mock login (for demo without backend)
+            if (email && password) {
+                // Store login state
+                localStorage.setItem('loggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                window.location.href = 'company_dashboard.html';
+            } else {
+                document.getElementById('errorMsg').innerText = 'Please enter email and password';
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

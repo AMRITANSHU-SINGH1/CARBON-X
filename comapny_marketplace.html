@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace | Carbon-X</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+    <!-- Navbar -->
+    <nav class="bg-slate-800 px-6 py-4 flex justify-between items-center">
+        <a href="index.html" class="text-emerald-400 text-2xl font-bold">← CARBON-X</a>
+        <div class="space-x-4">
+            <a href="company_dashboard.html" class="hover:text-emerald-400">Dashboard</a>
+            <a href="company_emissions.html" class="hover:text-emerald-400">Emissions</a>
+            <a href="company_marketplace.html" class="text-emerald-400">Marketplace</a>
+            <a href="company_profile.html" class="hover:text-emerald-400">Profile</a>
+        </div>
+    </nav>
+
+    <main class="p-6 max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">🛒 Carbon Credit Marketplace</h1>
+
+        <!-- Form to list credits for sale -->
+        <div class="bg-slate-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Buy Carbon Credits</h2>
+            <!-- <form id="sellForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="number" id="creditAmount" placeholder="Amount (credits)" required class="p-2 rounded bg-slate-700 border border-slate-600">
+                <input type="number" id="pricePerCredit" placeholder="Price per credit ($)" step="0.01" required class="p-2 rounded bg-slate-700 border border-slate-600">
+                <button type="submit" class="bg-emerald-600 px-4 py-2 rounded hover:bg-emerald-500">List for Sale</button>
+            </form> -->
+            <!-- <p id="sellMessage" class="text-sm mt-2 hidden"></p> -->
+        </div>
+
+        <!-- Active listings table -->
+        <div class="bg-slate-800 rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-3">Active Listings</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="border-b border-slate-700">
+                        <tr>
+                            <th>Seller</th>
+                            <th>Amount (credits)</th>
+                            <th>Price per credit</th>
+                            <th>Total Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listingsTable">
+                        <tr>
+                            <td colspan="5" class="text-center text-slate-400 py-4">No active listings. Be the first to sell credits!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mock listings array (replace with backend data later)
+        let listings = [];
+
+        function renderListings() {
+            const tbody = document.getElementById('listingsTable');
+            if (listings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-slate-400 py-4">No active listings. Be the first to sell credits!</td></tr>';
+                return;
+            }
+            tbody.innerHTML = listings.map((listing, index) => `
+                <tr class="border-t border-slate-700/50">
+                    <td>${listing.seller}</td>
+                    <td>${listing.amount}</td>
+                    <td>$${listing.price}</td>
+                    <td>$${(listing.amount * listing.price).toFixed(2)}</td>
+                    <td><button onclick="buyListing(${index})" class="bg-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-500">Buy</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // Handle sell form
+        /*document.getElementById('sellForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = parseInt(document.getElementById('creditAmount').value);
+            const price = parseFloat(document.getElementById('pricePerCredit').value);
+            
+            if (amount <= 0 || price <= 0) {
+                //alert('Please enter valid amount and price');
+                return;
+            }*/
+
+            // Mock seller name (in real app, get from logged-in user)
+            const newListing = {
+                seller: 'Your Company',
+                amount: amount,
+                price: price
+            };
+            listings.push(newListing);
+            renderListings();
+            
+            document.getElementById('sellMessage').innerHTML = '✅ Listing added successfully!';
+            document.getElementById('sellMessage').className = 'text-emerald-400 text-sm mt-2';
+            document.getElementById('sellMessage').classList.remove('hidden');
+            document.getElementById('sellForm').reset();
+            setTimeout(() => document.getElementById('sellMessage').classList.add('hidden'), 3000);
+        ;
+
+        // Buy listing (mock)
+        window.buyListing = function(index) {
+            const listing = listings[index];
+            if (confirm(`Buy ${listing.amount} credits for $${(listing.amount * listing.price).toFixed(2)}?`)) {
+                listings.splice(index, 1);
+                renderListings();
+                alert('Purchase successful! Credits added to your balance.');
+                // In real app: call backend API to process transaction
+            }
+        };
+
+        // Initial empty state
+        renderListings();
+    </script>
+</body>
+</html>

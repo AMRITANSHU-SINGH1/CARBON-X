@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Carbon-X</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+  <!-- Simple Navbar with link back to index.html -->
+  <nav class="bg-slate-800 px-6 py-4 flex justify-between items-center">
+    <a href="index.html" class="text-emerald-400 text-2xl font-bold">← CARBON-X</a>
+    <div class="space-x-4">
+      <a href="company_dashboard.html" class="text-emerald-400">Dashboard</a>
+      <a href="company_emissions.html" class="hover:text-emerald-400">Emissions</a>
+      <a href="comapny_marketplace.html" class="hover:text-emerald-400">Marketplace</a>
+      <a href="company_profile.html" class="hover:text-emerald-400">Profile</a>
+    </div>
+  </nav>
+
+  <main class="p-6 max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">📊 Company Dashboard</h1>
+
+    <!-- Company Info & Credits -->
+    <div class="bg-slate-800 rounded-lg p-6 mb-6">
+      <p class="text-slate-400 text-sm">Your Carbon Credit Balance</p>
+      <p id="creditBalance" class="text-4xl font-bold text-emerald-400">0</p>
+      <p class="text-slate-500 text-xs mt-1">Credits earned by reducing emissions</p>
+    </div>
+
+    <!-- Emissions Summary -->
+    <div class="bg-slate-800 rounded-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-3">📈 Emissions Summary</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p class="text-slate-400 text-sm">Total CO₂ Emitted</p>
+          <p id="totalEmissions" class="text-2xl font-bold">0</p>
+          <p class="text-slate-500 text-xs">tons</p>
+        </div>
+        <div>
+          <p class="text-slate-400 text-sm">Reporting Periods</p>
+          <p id="reportCount" class="text-2xl font-bold">0</p>
+          <p class="text-slate-500 text-xs">records submitted</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-slate-800 rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-3">🕒 Recent Activity</h2>
+      <div id="recentActivity" class="text-slate-400 text-center py-4">
+        No activity yet. Go to Emissions page to add your first record.
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Mock data (empty state)
+    function loadDashboard() {
+      // Show zeros / empty messages initially
+      document.getElementById('creditBalance').innerText = '0';
+      document.getElementById('totalEmissions').innerText = '0';
+      document.getElementById('reportCount').innerText = '0';
+      
+      // Keep recent activity empty message
+      document.getElementById('recentActivity').innerHTML = 
+        'No activity yet. Go to Emissions page to add your first record.';
+    }
+    
+    loadDashboard();
+    
+    // Later, replace with real API call:
+    /*
+    async function loadDashboard() {
+      const userId = localStorage.getItem('userId');
+      const res = await fetch(`http://localhost:5000/api/dashboard/${userId}`);
+      const data = await res.json();
+      document.getElementById('creditBalance').innerText = data.credit_balance;
+      document.getElementById('totalEmissions').innerText = data.total_emissions;
+      document.getElementById('reportCount').innerText = data.records_count;
+      // show recent transactions, etc.
+    }
+    */
+  </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Carbon Credits | Carbon-X</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+    <!-- Navbar -->
+    <nav class="bg-slate-800 px-6 py-4 flex justify-between items-center">
+    <a href="index.html" class="text-emerald-400 text-2xl font-bold">← CARBON-X</a>
+    <div class="space-x-4">
+      <a href="landowner_dashboard.html" class="hover:text-emerald-400">Dashboard</a>
+      <!-- <a href="company_emissions.html" class="hover:text-emerald-400">Emissions</a> -->
+      <a href="landowner_marketplace.html" class="hover:text-emerald-400">Marketplace</a>
+      <a href="landowner_profile.html" class="hover:text-emerald-400">Profile</a>
+    </div>
+  </nav>
+    <main class="p-6 max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-2">📤 List Carbon Credits for Sale</h1>
+        <p class="text-slate-400 mb-6">Your listings are stored securely in your browser .</p>
+
+        <!-- Sell Form -->
+        <div class="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700">
+            <form id="sellForm" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Seller / Project Name *</label>
+                    <input type="text" id="sellerName" placeholder="e.g., Amazon Reforestation" required class="w-full p-3 rounded-xl bg-slate-700 border border-slate-600 focus:border-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Amount (carbon credits / tons CO₂) *</label>
+                    <input type="number" id="creditAmount" placeholder="e.g., 100" min="1" step="1" required class="w-full p-3 rounded-xl bg-slate-700 border border-slate-600 focus:border-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Price per credit (USD) *</label>
+                    <input type="number" id="pricePerCredit" placeholder="e.g., 12.50" min="0.01" step="0.01" required class="w-full p-3 rounded-xl bg-slate-700 border border-slate-600 focus:border-emerald-500 outline-none">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-semibold transition shadow-md">
+                    ✅ Sell / List Credits
+                </button>
+            </form>
+            <div id="messageBox" class="mt-4 text-sm text-center hidden"></div>
+        </div>
+
+        <!-- Optional: Display your current listings (just to prove storage) -->
+        <div class="mt-8 bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+            <h2 class="text-lg font-semibold flex items-center gap-2">
+                📋 Your Active Listings 
+                <span class="text-xs bg-slate-700 px-2 py-0.5 rounded-full" id="listingCount">0</span>
+            </h2>
+            <div id="myListingsContainer" class="mt-3 space-y-2 text-sm">
+                <p class="text-slate-400 italic">No listings yet. Fill out the form above to create one.</p>
+            </div>
+            <button id="clearAllBtn" class="mt-3 text-xs bg-red-900/40 hover:bg-red-800 text-red-300 px-3 py-1 rounded">Clear All My Listings</button>
+        </div>
+
+        <!-- <div class="mt-6 text-xs text-slate-500 border-t border-slate-800 pt-4">
+            💾 <strong>Where is my data stored?</strong> All listings are saved in your browser's <code class="bg-slate-800 px-1 rounded">localStorage</code>. They will remain even after you close the page. No database or server is used.
+        </div> -->
+    </main>
+
+    <script>
+        // Storage key
+        const STORAGE_KEY = 'carbonx_my_listings';
+
+        // Load listings from localStorage
+        let myListings = [];
+
+        function loadListings() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                myListings = JSON.parse(stored);
+            } else {
+                myListings = [];
+            }
+            renderMyListings();
+        }
+
+        function saveListings() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(myListings));
+            renderMyListings();
+        }
+
+        // Display only the user's own listings (no marketplace table)
+        function renderMyListings() {
+            const container = document.getElementById('myListingsContainer');
+            const countSpan = document.getElementById('listingCount');
+            if (!container) return;
+
+            if (myListings.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 italic">✨ No active listings. Use the form above to sell credits.</p>';
+                if (countSpan) countSpan.innerText = '0';
+                return;
+            }
+
+            // Build a simple list
+            let html = '<div class="space-y-2">';
+            myListings.forEach((listing, idx) => {
+                const total = (listing.amount * listing.price).toFixed(2);
+                html += `
+                    <div class="bg-slate-800 p-3 rounded-lg flex justify-between items-center border border-slate-600">
+                        <div>
+                            <span class="font-medium text-emerald-300">${escapeHtml(listing.seller)}</span>
+                            <div class="text-xs text-slate-400">${listing.amount} credits @ $${listing.price.toFixed(2)} each = <span class="text-white">$${total}</span></div>
+                        </div>
+                        <button onclick="removeListing(${idx})" class="text-red-400 hover:text-red-300 text-sm bg-slate-700 px-2 py-1 rounded">Remove</button>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            if (countSpan) countSpan.innerText = myListings.length;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Remove individual listing
+        window.removeListing = function(index) {
+            if (index >= 0 && index < myListings.length) {
+                const removed = myListings[index];
+                myListings.splice(index, 1);
+                saveListings();
+                showMessage(`🗑 Removed "${removed.seller}" listing.`, 'info');
+            }
+        };
+
+        // Clear all listings
+        function clearAllListings() {
+            if (myListings.length === 0) {
+                showMessage('No listings to clear.', 'info');
+                return;
+            }
+            if (confirm('Delete ALL your carbon credit listings? This action cannot be undone.')) {
+                myListings = [];
+                saveListings();
+                showMessage('✅ All listings have been cleared from localStorage.', 'success');
+            }
+        }
+
+        function showMessage(msg, type = 'success') {
+            const box = document.getElementById('messageBox');
+            if (!box) return;
+            box.innerText = msg;
+            box.className = `mt-4 text-sm text-center p-2 rounded-lg ${type === 'success' ? 'bg-emerald-900/50 text-emerald-300' : 'bg-slate-700 text-slate-200'}`;
+            box.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Handle sell form submission
+        function initSellForm() {
+            const form = document.getElementById('sellForm');
+            if (!form) return;
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const seller = document.getElementById('sellerName').value.trim();
+                const amount = parseInt(document.getElementById('creditAmount').value);
+                const price = parseFloat(document.getElementById('pricePerCredit').value);
+
+                if (!seller) {
+                    alert('Please enter a seller/project name.');
+                    return;
+                }
+                if (isNaN(amount) || amount <= 0) {
+                    alert('Please enter a valid amount (positive number of credits).');
+                    return;
+                }
+                if (isNaN(price) || price <= 0) {
+                    alert('Please enter a valid price per credit (greater than zero).');
+                    return;
+                }
+
+                // Create new listing
+                const newListing = {
+                    seller: seller,
+                    amount: amount,
+                    price: price,
+                    timestamp: new Date().toISOString()
+                };
+                myListings.push(newListing);
+                saveListings();
+
+                // Clear form fields
+                document.getElementById('sellerName').value = '';
+                document.getElementById('creditAmount').value = '';
+                document.getElementById('pricePerCredit').value = '';
+
+                // Show success message with storage info
+                showMessage(`✅ Listed ${amount} credits from "${seller}" at $${price}/credit. Stored in your browser's localStorage.`, 'success');
+            });
+        }
+
+        // Clear all button
+        document.addEventListener('DOMContentLoaded', () => {
+            loadListings();
+            initSellForm();
+            const clearBtn = document.getElementById('clearAllBtn');
+            if (clearBtn) clearBtn.addEventListener('click', clearAllListings);
+        });
+    </script>
+</body>
+</html>

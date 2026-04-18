@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landowner Profile | Carbon-X</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+    <!-- Navbar -->
+    <nav class="bg-slate-800 px-6 py-4 flex justify-between items-center">
+        <a href="index.html" class="text-emerald-400 text-2xl font-bold">← CARBON-X</a>
+        <div class="space-x-4">
+            <a href="landowner_dashboard.html" class="hover:text-emerald-400">Dashboard</a>
+            <a href="landowner_marketplace.html" class="hover:text-emerald-400">Marketplace</a>
+            <a href="landowner_profile.html" class="text-emerald-400">Profile</a>
+        </div>
+    </nav>
+
+    <main class="p-6 max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">👤 Landowner Profile</h1>
+
+        <div class="bg-slate-800 rounded-lg p-6 mb-6">
+            <div class="text-center mb-6">
+                <div class="text-6xl mb-2">🌾</div>
+                <p id="landownerName" class="text-2xl font-semibold">Your Name</p>
+                <p id="creditBalance" class="text-emerald-400 text-xl mt-1">0 credits</p>
+            </div>
+
+            <form id="profileForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm mb-1">Full Name</label>
+                    <input type="text" id="full_name" class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+                </div>
+                <div>
+                    <label class="block text-sm mb-1">Email</label>
+                    <input type="email" id="email" class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+                </div>
+                <div>
+                    <label class="block text-sm mb-1">Property / Land Name</label>
+                    <input type="text" id="land_name" placeholder="e.g., Green Valley Ranch" class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+                </div>
+                <div>
+                    <label class="block text-sm mb-1">Location (State/Region)</label>
+                    <input type="text" id="location" placeholder="e.g., Oregon, USA" class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+                </div>
+                <div>
+                    <label class="block text-sm mb-1">Password (leave blank to keep same)</label>
+                    <input type="password" id="password" class="w-full p-2 rounded bg-slate-700 border border-slate-600">
+                </div>
+                <button type="submit" class="bg-emerald-600 px-4 py-2 rounded hover:bg-emerald-500">Update Profile</button>
+                <p id="updateMessage" class="text-sm hidden"></p>
+            </form>
+        </div>
+
+        <!-- Note about backend integration -->
+        
+    </main>
+
+    <script>
+        // Mock profile data (temporary, will be replaced by backend API calls)
+        let profile = {
+            full_name: '',
+            email: '',
+            land_name: '',
+            location: '',
+            credits: 0
+        };
+
+        // Load mock data (in future: fetch from backend)
+        function loadProfile() {
+            document.getElementById('full_name').value = profile.full_name || '';
+            document.getElementById('email').value = profile.email || '';
+            document.getElementById('land_name').value = profile.land_name || '';
+            document.getElementById('location').value = profile.location || '';
+            document.getElementById('landownerName').innerText = profile.full_name || 'Your Name';
+            document.getElementById('creditBalance').innerText = profile.credits + ' credits';
+        }
+
+        // Handle form submission (simulate API call)
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Gather updated values
+            profile.full_name = document.getElementById('full_name').value;
+            profile.email = document.getElementById('email').value;
+            profile.land_name = document.getElementById('land_name').value;
+            profile.location = document.getElementById('location').value;
+
+            // In a real backend, you would send a PUT/POST request to update the user profile
+            // and also handle password change securely.
+
+            // Show success message
+            const msg = document.getElementById('updateMessage');
+            msg.innerHTML = '✅ Profile updated successfully! (Backend integration pending)';
+            msg.className = 'text-emerald-400 text-sm mt-2';
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 3000);
+
+            // Update displayed name
+            document.getElementById('landownerName').innerText = profile.full_name || 'Your Name';
+            
+            // Clear password field for security
+            document.getElementById('password').value = '';
+        });
+
+        // Initialize page
+        loadProfile();
+    </script>
+</body>
+</html>

@@ -1,5 +1,8 @@
-this is the requirements file in the backend 
-python 
-flask 
-postgresql
-wrezek security
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+pg8000==1.31.2
+python-dotenv==1.0.1
+Flask-Login==0.6.3
+Werkzeug>=3.0.3
+WTForms==3.1.2
+email-validator==2.1.1

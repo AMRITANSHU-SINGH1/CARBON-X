@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Green Cover Verification</h2>
+    <p class="text-center mb-4 text-secondary">Please submit your green cover and satellite coordinates for validation.</p>
+    
+    <div class="alert alert-info">
+        Status: <span class="status-badge status-{{ current_user.landowner_profile.verification_status }}">{{ current_user.landowner_profile.verification_status }}</span>
+    </div>
+
+    {% if current_user.landowner_profile.verification_status == 'pending' %}
+    <form method="POST" action="{{ url_for('verification.landowner_form') }}">
+        <div class="form-group">
+            <label for="green_cover_details">Green Cover Details & Coordinates</label>
+            <textarea id="green_cover_details" name="green_cover_details" rows="5" required placeholder="Provide hectares of forest, location coordinates, tree species..."></textarea>
+        </div>
+        <button type="submit" class="btn mt-4">Submit for Verification</button>
+    </form>
+    {% else %}
+    <div class="text-center mt-4">
+        <p>Your verification is currently under review or has been processed.</p>
+        <a href="{{ url_for('dashboard.index') }}" class="btn mt-4">Go to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

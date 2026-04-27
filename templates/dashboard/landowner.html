@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2><span style="color: var(--primary-color)">Landowner</span> Dashboard</h2>
+    <p class="text-secondary">Welcome, {{ profile.full_name }}</p>
+    
+    {% if profile.verification_status == 'approved' %}
+    <div class="alert alert-success mt-4">
+        Your green cover is verified! You can now mint and list carbon credits.
+    </div>
+    
+    <div class="card-grid">
+        <div class="card">
+            <h3>Mint Credits</h3>
+            <p class="text-secondary mt-4">Tokenize your approved environmental assets.</p>
+            <button class="btn mt-4" style="background: var(--surface-border)">Mint Now</button>
+        </div>
+        <div class="card">
+            <h3>My Listed Assets</h3>
+            <p class="text-secondary mt-4">View and manage your active marketplace listings.</p>
+            <button class="btn mt-4" style="background: var(--surface-border)">View Inventory</button>
+        </div>
+    </div>
+    
+    {% else %}
+    <div class="alert alert-warning mt-4 text-center">
+        <h3>Verification Status: <span class="status-badge status-{{ profile.verification_status }}">{{ profile.verification_status }}</span></h3>
+        <p class="mt-4">Your dashboard features are locked until an administrator reviews and approves your submitted land details.</p>
+        {% if profile.verification_status == 'pending' %}
+        <a href="{{ url_for('verification.landowner_form') }}" class="btn mt-4" style="max-width: 200px">Complete Form</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

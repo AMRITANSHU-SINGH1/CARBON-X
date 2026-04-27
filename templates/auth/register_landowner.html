@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Landowner Registration</h2>
+    <p class="text-center mb-4 text-secondary">Register to list and tokenize your carbon credits.</p>
+    
+    <form method="POST" action="{{ url_for('auth.register_landowner') }}">
+        <div class="form-group">
+            <label for="full_name">Full Name / Organization</label>
+            <input type="text" id="full_name" name="full_name" required>
+        </div>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn mt-4">Create Account & Proceed</button>
+    </form>
+</div>
+{% endblock %}

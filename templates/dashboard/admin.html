@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2><span style="color: var(--primary-color)">Admin</span> Overview</h2>
+        <div>
+            <a href="{{ url_for('auth.register_subordinate') }}" class="btn" style="width: auto; padding: 0.5rem 1rem;">+ Add Subordinate</a>
+        </div>
+    </div>
+    
+    <p class="text-secondary mt-4">Welcome to the Ecosystem Administration terminal. Here you can govern the entire marketplace.</p>
+    
+    <div class="card-grid">
+        <div class="card">
+            <h3>Pending Verifications</h3>
+            <p class="text-secondary mt-4">Approve or reject data submissions from Companies and Landowners.</p>
+            <button class="btn mt-4" style="background: var(--surface-border)">View Queue</button>
+        </div>
+        <div class="card">
+            <h3>Subordinates</h3>
+            <p class="text-secondary mt-4">Manage regional validators and ecosystem delegates.</p>
+            <button class="btn mt-4" style="background: var(--surface-border)">Manage Access</button>
+        </div>
+        <div class="card">
+            <h3>Platform Analytics</h3>
+            <p class="text-secondary mt-4">View total traded credits and ecosystem health.</p>
+            <button class="btn mt-4" style="background: var(--surface-border)">Open Reports</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

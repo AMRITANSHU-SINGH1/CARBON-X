@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2><span style="color: var(--primary-color)">Company</span> Dashboard</h2>
+    <p class="text-secondary">Welcome, {{ profile.company_name }} ({{ profile.registration_number }})</p>
+    
+    {% if profile.verification_status == 'approved' %}
+    <div class="alert alert-success mt-4">
+        Your emission profile is verified! You can now operate on the complete marketplace.
+    </div>
+    
+    <div class="card-grid">
+        <div class="card">
+            <h3>Purchase Credits</h3>
+            <p class="text-secondary mt-4">Explore the marketplace to offset your emissions.</p>
+            <button class="btn mt-4" style="background: var(--surface-border)">Open Market</button>
+        </div>
+        <div class="card">
+            <h3>My Portfolio</h3>
+            <p class="text-secondary mt-4">View your retired and active carbon credits.</p>
+            <button class="btn mt-4" style="background: var(--surface-border)">View Assets</button>
+        </div>
+    </div>
+    
+    {% else %}
+    <div class="alert alert-warning mt-4 text-center">
+        <h3>Verification Status: <span class="status-badge status-{{ profile.verification_status }}">{{ profile.verification_status }}</span></h3>
+        <p class="mt-4">Your dashboard features are locked until an administrator reviews and approves your emission data submission.</p>
+        {% if profile.verification_status == 'pending' %}
+        <a href="{{ url_for('verification.company_form') }}" class="btn mt-4" style="max-width: 200px">Complete Form</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

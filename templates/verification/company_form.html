@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Company Emission Verification</h2>
+    <p class="text-center mb-4 text-secondary">Please submit your carbon emission data for validation by our ecosystem administrators.</p>
+    
+    <div class="alert alert-info">
+        Status: <span class="status-badge status-{{ current_user.company_profile.verification_status }}">{{ current_user.company_profile.verification_status }}</span>
+    </div>
+
+    {% if current_user.company_profile.verification_status == 'pending' %}
+    <form method="POST" action="{{ url_for('verification.company_form') }}">
+        <div class="form-group">
+            <label for="emission_data">Detailed Emission Data Breakdown (Annual Tons of CO2e)</label>
+            <textarea id="emission_data" name="emission_data" rows="5" required placeholder="Provide breakdown of Scope 1, Scope 2, and Scope 3 emissions..."></textarea>
+        </div>
+        <button type="submit" class="btn mt-4">Submit for Verification</button>
+    </form>
+    {% else %}
+    <div class="text-center mt-4">
+        <p>Your verification is currently under review or has been processed.</p>
+        <a href="{{ url_for('dashboard.index') }}" class="btn mt-4">Go to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

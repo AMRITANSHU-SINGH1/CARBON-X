@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container" style="max-width: 1200px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2><span style="color: var(--primary-color)">Companies</span> Directory</h2>
+        <a href="{{ url_for('dashboard.index') }}" class="btn" style="width: auto; padding: 0.5rem 1rem; background: var(--surface-border)">Back to Dashboard</a>
+    </div>
+    
+    <p class="text-secondary mt-4">Manage and monitor all companies operating on the Carbon-X platform.</p>
+    
+    <div style="margin-top: 2rem;">
+        <h3>Pending Authorisation ({{ pending|length }})</h3>
+        <p class="text-secondary" style="font-size: 0.9em; margin-bottom: 1rem;">These companies are awaiting verification and approval.</p>
+        <div class="card" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--surface-border);">
+                        <th style="padding: 1rem;">ID</th>
+                        <th style="padding: 1rem;">Company Name</th>
+                        <th style="padding: 1rem;">Admin Contact</th>
+                        <th style="padding: 1rem;">Reg/EIN Number</th>
+                        <th style="padding: 1rem;">District</th>
+                        <th style="padding: 1rem;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comp in pending %}
+                    <tr style="border-bottom: 1px solid var(--surface-border);">
+                        <td style="padding: 1rem; font-weight: bold;">{{ comp.unique_id }}</td>
+                        <td style="padding: 1rem;">{{ comp.company_profile.company_name if comp.company_profile else 'N/A' }}</td>
+                        <td style="padding: 1rem;">
+                            {{ comp.username }}<br>
+                            <span style="font-size: 0.85em; color: var(--text-secondary)">{{ comp.email }}</span>
+                        </td>
+                        <td style="padding: 1rem;">{{ comp.company_profile.registration_number if comp.company_profile else 'N/A' }}</td>
+                        <td style="padding: 1rem;">{{ comp.company_profile.district if comp.company_profile else 'N/A' }}</td>
+                        <td style="padding: 1rem;">
+                            <span class="status-badge status-pending" style="text-transform: none;">Not verified</span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No companies pending authorisation.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="margin-top: 3rem;">
+        <h3>Authorised Companies ({{ authorised|length }})</h3>
+        <p class="text-secondary" style="font-size: 0.9em; margin-bottom: 1rem;">These companies have been fully vetted and approved to operate.</p>
+        <div class="card" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--surface-border);">
+                        <th style="padding: 1rem;">ID</th>
+                        <th style="padding: 1rem;">Company Name</th>
+                        <th style="padding: 1rem;">Admin Contact</th>
+                        <th style="padding: 1rem;">Reg/EIN Number</th>
+                        <th style="padding: 1rem;">District</th>
+                        <th style="padding: 1rem;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comp in authorised %}
+                    <tr style="border-bottom: 1px solid var(--surface-border);">
+                        <td style="padding: 1rem; font-weight: bold;">{{ comp.unique_id }}</td>
+                        <td style="padding: 1rem;">{{ comp.company_profile.company_name if comp.company_profile else 'N/A' }}</td>
+                        <td style="padding: 1rem;">
+                            {{ comp.username }}<br>
+                            <span style="font-size: 0.85em; color: var(--text-secondary)">{{ comp.email }}</span>
+                        </td>
+                        <td style="padding: 1rem;">{{ comp.company_profile.registration_number if comp.company_profile else 'N/A' }}</td>
+                        <td style="padding: 1rem;">{{ comp.company_profile.district if comp.company_profile else 'N/A' }}</td>
+                        <td style="padding: 1rem;">
+                            <span class="status-badge status-approved" style="text-transform: none;">Verified</span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No authorised companies yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from extensions import db
-from models import User, CompanyProfile, LandownerProfile
+from models import User, CompanyProfile, LandownerProfile, SubordinateProfile
+import uuid
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -42,12 +43,15 @@ def register_company():
         password = request.form.get('password')
         company_name = request.form.get('company_name')
         registration_number = request.form.get('registration_number')
+        district = request.form.get('district')
+        address = request.form.get('address')
         
         if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
             flash('Username or email already exists.', 'danger')
             return redirect(url_for('auth.register_company'))
             
         new_user = User(
+            unique_id='COM-' + uuid.uuid4().hex[:6].upper(),
             username=username,
             email=email,
             password_hash=generate_password_hash(password),
@@ -59,7 +63,9 @@ def register_company():
         company_profile = CompanyProfile(
             user_id=new_user.id,
             company_name=company_name,
-            registration_number=registration_number
+            registration_number=registration_number,
+            district=district,
+            address=address
         )
         db.session.add(company_profile)
         db.session.commit()
@@ -80,12 +86,15 @@ def register_landowner():
         email = request.form.get('email')
         password = request.form.get('password')
         full_name = request.form.get('full_name')
+        district = request.form.get('district')
+        address = request.form.get('address')
         
         if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
             flash('Username or email already exists.', 'danger')
             return redirect(url_for('auth.register_landowner'))
             
         new_user = User(
+            unique_id='CCOW-' + uuid.uuid4().hex[:6].upper(),
             username=username,
             email=email,
             password_hash=generate_password_hash(password),
@@ -96,7 +105,9 @@ def register_landowner():
         
         landowner_profile = LandownerProfile(
             user_id=new_user.id,
-            full_name=full_name
+            full_name=full_name,
+            district=district,
+            address=address
         )
         db.session.add(landowner_profile)
         db.session.commit()
@@ -119,17 +130,29 @@ def register_subordinate():
         email = request.form.get('email')
         password = request.form.get('password')
         
+        full_name = request.form.get('full_name')
+        district = request.form.get('district')
+        
         if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
             flash('Username or email already exists.', 'danger')
             return redirect(url_for('auth.register_subordinate'))
             
         new_user = User(
+            unique_id='CXSO-' + uuid.uuid4().hex[:6].upper(),
             username=username,
             email=email,
             password_hash=generate_password_hash(password),
             role='subordinate'
         )
         db.session.add(new_user)
+        db.session.flush() # flush to get new_user.id
+        
+        subordinate_profile = SubordinateProfile(
+            user_id=new_user.id,
+            full_name=full_name,
+            district=district
+        )
+        db.session.add(subordinate_profile)
         db.session.commit()
         
         flash('Subordinate registered successfully!', 'success')

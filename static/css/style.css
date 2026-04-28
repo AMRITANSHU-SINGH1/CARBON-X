@@ -105,7 +105,8 @@ label {
 input[type="text"],
 input[type="email"],
 input[type="password"],
-textarea {
+textarea,
+select {
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 8px;
@@ -114,7 +115,10 @@ textarea {
     color: var(--text-primary);
     font-size: 1rem;
     transition: border-color 0.3s, box-shadow 0.3s;
+    appearance: none;
 }
+
+select:focus,
 
 input:focus, textarea:focus {
     outline: none;

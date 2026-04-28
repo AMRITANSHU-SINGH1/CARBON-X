@@ -13,14 +13,14 @@
     
     <div class="card-grid">
         <div class="card">
-            <h3>Pending Verifications</h3>
-            <p class="text-secondary mt-4">Approve or reject data submissions from Companies and Landowners.</p>
-            <button class="btn mt-4" style="background: var(--surface-border)">View Queue</button>
+            <h3>Companies Directory</h3>
+            <p class="text-secondary mt-4">View and manage all registered companies and their authorization statuses.</p>
+            <a href="{{ url_for('dashboard.companies_list') }}" class="btn mt-4" style="background: var(--surface-border); display: inline-block; text-align: center;">View Companies</a>
         </div>
         <div class="card">
             <h3>Subordinates</h3>
             <p class="text-secondary mt-4">Manage regional validators and ecosystem delegates.</p>
-            <button class="btn mt-4" style="background: var(--surface-border)">Manage Access</button>
+            <a href="{{ url_for('dashboard.subordinates_list') }}" class="btn mt-4" style="background: var(--surface-border); display: inline-block; text-align: center;">View Subordinates</a>
         </div>
         <div class="card">
             <h3>Platform Analytics</h3>

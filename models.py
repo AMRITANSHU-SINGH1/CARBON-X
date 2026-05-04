@@ -55,3 +55,21 @@ class LandownerProfile(db.Model):
     green_cover_details = db.Column(db.Text, nullable=True)
     site_verified = db.Column(db.Boolean, default=False)
     admin_approved = db.Column(db.Boolean, default=False)
+
+class VerificationTask(db.Model):
+    __tablename__ = 'verification_tasks'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    subordinate_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    company_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    landowner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    
+    status = db.Column(db.String(20), default='assigned') # 'assigned', 'in_progress', 'completed', 'rejected'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    due_date = db.Column(db.DateTime, nullable=True)
+    completed_at = db.Column(db.DateTime, nullable=True)
+    
+    # Relationships
+    subordinate = db.relationship('User', foreign_keys=[subordinate_id], backref='assigned_tasks')
+    company = db.relationship('User', foreign_keys=[company_id], backref='company_verification_tasks')
+    landowner = db.relationship('User', foreign_keys=[landowner_id], backref='landowner_verification_tasks')

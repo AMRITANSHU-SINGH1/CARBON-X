@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from extensions import db
-from models import User, SubordinateProfile
+from models import User, SubordinateProfile, VerificationTask
+from datetime import datetime
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -103,3 +104,85 @@ def edit_subordinate(sub_id):
         return redirect(url_for('dashboard.subordinates_list'))
         
     return render_template('dashboard/edit_subordinate.html', subordinate=subordinate)
+
+@dashboard_bp.route('/allocations', methods=['GET', 'POST'])
+@login_required
+def allocations():
+    if current_user.role != 'admin':
+        flash('Access denied.', 'danger')
+        return redirect(url_for('dashboard.index'))
+        
+    if request.method == 'POST':
+        subordinate_id = request.form.get('subordinate_id')
+        target_id = request.form.get('target_id')
+        target_type = request.form.get('target_type') # 'company' or 'landowner'
+        due_date_str = request.form.get('due_date')
+        
+        due_date = None
+        if due_date_str:
+            try:
+                due_date = datetime.strptime(due_date_str, '%Y-%m-%d')
+            except ValueError:
+                flash('Invalid date format.', 'danger')
+                return redirect(url_for('dashboard.allocations'))
+        
+        if not subordinate_id or not target_id or not target_type:
+            flash('Invalid assignment data.', 'danger')
+            return redirect(url_for('dashboard.allocations'))
+            
+        # Create verification task
+        task = VerificationTask(
+            subordinate_id=subordinate_id,
+            due_date=due_date
+        )
+        if target_type == 'company':
+            task.company_id = target_id
+        elif target_type == 'landowner':
+            task.landowner_id = target_id
+            
+        db.session.add(task)
+        db.session.commit()
+        flash('Task assigned successfully.', 'success')
+        return redirect(url_for('dashboard.allocations'))
+
+    # Get unassigned companies
+    companies = User.query.filter_by(role='company').all()
+    pending_companies = [
+        c for c in companies 
+        if c.company_profile 
+        and c.company_profile.verification_status == 'submitted'
+        and not VerificationTask.query.filter_by(company_id=c.id, status='assigned').first()
+        and not VerificationTask.query.filter_by(company_id=c.id, status='in_progress').first()
+    ]
+    
+    # Get unassigned landowners
+    landowners = User.query.filter_by(role='landowner').all()
+    pending_landowners = [
+        l for l in landowners 
+        if l.landowner_profile 
+        and l.landowner_profile.verification_status == 'submitted'
+        and not VerificationTask.query.filter_by(landowner_id=l.id, status='assigned').first()
+        and not VerificationTask.query.filter_by(landowner_id=l.id, status='in_progress').first()
+    ]
+    
+    # Get all subordinates
+    subordinates = User.query.filter_by(role='subordinate').all()
+    
+    return render_template('dashboard/allocations.html', 
+                          companies=pending_companies, 
+                          landowners=pending_landowners, 
+                          subordinates=subordinates)
+
+@dashboard_bp.route('/tasks')
+@login_required
+def tasks():
+    if current_user.role != 'subordinate':
+        flash('Access denied.', 'danger')
+        return redirect(url_for('dashboard.index'))
+        
+    tasks = VerificationTask.query.filter_by(subordinate_id=current_user.id).order_by(VerificationTask.created_at.desc()).all()
+    
+    pending_tasks = [t for t in tasks if t.status in ('assigned', 'in_progress')]
+    completed_tasks = [t for t in tasks if t.status in ('completed', 'rejected')]
+    
+    return render_template('dashboard/tasks.html', pending_tasks=pending_tasks, completed_tasks=completed_tasks)

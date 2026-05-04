@@ -41,6 +41,19 @@ def companies_list():
     
     return render_template('dashboard/companies_list.html', authorised=authorised, pending=pending)
 
+@dashboard_bp.route('/landowners')
+@login_required
+def landowners_list():
+    if current_user.role != 'admin':
+        flash('Access denied.', 'danger')
+        return redirect(url_for('dashboard.index'))
+    landowners = User.query.filter_by(role='landowner').all()
+    
+    authorised = [l for l in landowners if l.landowner_profile and (l.landowner_profile.admin_approved or l.landowner_profile.verification_status == 'approved')]
+    pending = [l for l in landowners if not l.landowner_profile or not (l.landowner_profile.admin_approved or l.landowner_profile.verification_status == 'approved')]
+    
+    return render_template('dashboard/landowners_list.html', authorised=authorised, pending=pending)
+
 @dashboard_bp.route('/subordinates')
 @login_required
 def subordinates_list():

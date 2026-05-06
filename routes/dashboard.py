@@ -186,3 +186,13 @@ def tasks():
     completed_tasks = [t for t in tasks if t.status in ('completed', 'rejected')]
     
     return render_template('dashboard/tasks.html', pending_tasks=pending_tasks, completed_tasks=completed_tasks)
+
+@dashboard_bp.route('/allocated_tasks')
+@login_required
+def allocated_tasks():
+    if current_user.role != 'admin':
+        flash('Access denied.', 'danger')
+        return redirect(url_for('dashboard.index'))
+        
+    tasks = VerificationTask.query.order_by(VerificationTask.created_at.desc()).all()
+    return render_template('dashboard/allocated_tasks.html', tasks=tasks)

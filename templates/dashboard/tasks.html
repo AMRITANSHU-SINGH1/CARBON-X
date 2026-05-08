@@ -40,6 +40,9 @@
                                 <strong>{{ task.company.company_profile.company_name }}</strong>
                             {% else %}
                                 <strong>{{ task.landowner.landowner_profile.full_name }}</strong>
+                                {% if task.landowner.landowner_profile.aadhaar_card_id %}
+                                    <br><span style="font-size: 0.85em; color: var(--text-secondary)">Aadhaar: {{ task.landowner.landowner_profile.aadhaar_card_id }}</span>
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td style="padding: 1rem;">
@@ -100,6 +103,9 @@
                                 <strong>{{ task.company.company_profile.company_name }}</strong>
                             {% else %}
                                 <strong>{{ task.landowner.landowner_profile.full_name }}</strong>
+                                {% if task.landowner.landowner_profile.aadhaar_card_id %}
+                                    <br><span style="font-size: 0.85em; color: var(--text-secondary)">Aadhaar: {{ task.landowner.landowner_profile.aadhaar_card_id }}</span>
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td style="padding: 1rem;">

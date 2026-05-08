@@ -18,6 +18,7 @@
                     <tr style="border-bottom: 1px solid var(--surface-border);">
                         <th style="padding: 1rem;">ID</th>
                         <th style="padding: 1rem;">Full Name</th>
+                        <th style="padding: 1rem;">Aadhaar ID</th>
                         <th style="padding: 1rem;">Contact</th>
                         <th style="padding: 1rem;">District</th>
                         <th style="padding: 1rem;">Status</th>
@@ -28,6 +29,7 @@
                     <tr style="border-bottom: 1px solid var(--surface-border);">
                         <td style="padding: 1rem; font-weight: bold;">{{ landowner.unique_id }}</td>
                         <td style="padding: 1rem;">{{ landowner.landowner_profile.full_name if landowner.landowner_profile else 'N/A' }}</td>
+                        <td style="padding: 1rem;">{{ landowner.landowner_profile.aadhaar_card_id if landowner.landowner_profile and landowner.landowner_profile.aadhaar_card_id else 'N/A' }}</td>
                         <td style="padding: 1rem;">
                             {{ landowner.username }}<br>
                             <span style="font-size: 0.85em; color: var(--text-secondary)">{{ landowner.email }}</span>
@@ -39,7 +41,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No landowners pending authorisation.</td>
+                        <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No landowners pending authorisation.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -56,6 +58,7 @@
                     <tr style="border-bottom: 1px solid var(--surface-border);">
                         <th style="padding: 1rem;">ID</th>
                         <th style="padding: 1rem;">Full Name</th>
+                        <th style="padding: 1rem;">Aadhaar ID</th>
                         <th style="padding: 1rem;">Contact</th>
                         <th style="padding: 1rem;">District</th>
                         <th style="padding: 1rem;">Status</th>
@@ -66,6 +69,7 @@
                     <tr style="border-bottom: 1px solid var(--surface-border);">
                         <td style="padding: 1rem; font-weight: bold;">{{ landowner.unique_id }}</td>
                         <td style="padding: 1rem;">{{ landowner.landowner_profile.full_name if landowner.landowner_profile else 'N/A' }}</td>
+                        <td style="padding: 1rem;">{{ landowner.landowner_profile.aadhaar_card_id if landowner.landowner_profile and landowner.landowner_profile.aadhaar_card_id else 'N/A' }}</td>
                         <td style="padding: 1rem;">
                             {{ landowner.username }}<br>
                             <span style="font-size: 0.85em; color: var(--text-secondary)">{{ landowner.email }}</span>
@@ -77,7 +81,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No authorised landowners yet.</td>
+                        <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No authorised landowners yet.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

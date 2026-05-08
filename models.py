@@ -31,7 +31,7 @@ class CompanyProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     company_name = db.Column(db.String(120), nullable=False)
-    registration_number = db.Column(db.String(64), unique=True, nullable=False)
+    registration_number = db.Column(db.String(64), unique=True, nullable=False) 
     district = db.Column(db.String(100), nullable=True)
     address = db.Column(db.String(255), nullable=True)
     
@@ -47,6 +47,7 @@ class LandownerProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     full_name = db.Column(db.String(120), nullable=False)
+    aadhaar_card_id = db.Column(db.String(12), unique=True, nullable=True) # 12 digit Aadhaar number
     district = db.Column(db.String(100), nullable=True)
     address = db.Column(db.String(255), nullable=True)
     

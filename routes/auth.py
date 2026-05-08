@@ -106,6 +106,7 @@ def register_landowner():
         landowner_profile = LandownerProfile(
             user_id=new_user.id,
             full_name=full_name,
+            aadhaar_card_id=request.form.get('aadhaar_card_id'),
             district=district,
             address=address
         )

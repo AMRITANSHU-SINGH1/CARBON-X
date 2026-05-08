@@ -4,6 +4,9 @@
 <div class="dashboard-container">
     <h2><span style="color: var(--primary-color)">Landowner</span> Dashboard</h2>
     <p class="text-secondary">Welcome, {{ profile.full_name }}</p>
+    {% if profile.aadhaar_card_id %}
+    <p class="text-secondary" style="font-size: 0.9em;">Aadhaar ID: {{ profile.aadhaar_card_id }}</p>
+    {% endif %}
     
     {% if profile.verification_status == 'approved' %}
     <div class="alert alert-success mt-4">

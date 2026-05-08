@@ -81,6 +81,9 @@
                         <td style="padding: 1rem;">
                             <strong>{{ landowner.landowner_profile.full_name }}</strong><br>
                             <span style="font-size: 0.85em; color: var(--text-secondary)">ID: {{ landowner.unique_id }}</span>
+                            {% if landowner.landowner_profile.aadhaar_card_id %}
+                                <br><span style="font-size: 0.85em; color: var(--text-secondary)">Aadhaar: {{ landowner.landowner_profile.aadhaar_card_id }}</span>
+                            {% endif %}
                         </td>
                         <td style="padding: 1rem;">{{ landowner.landowner_profile.district }}</td>
                         <td style="padding: 1rem;">

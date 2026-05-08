@@ -40,6 +40,9 @@
                                 <strong>{{ task.company.company_profile.company_name if task.company and task.company.company_profile else 'N/A' }}</strong>
                             {% else %}
                                 <strong>{{ task.landowner.landowner_profile.full_name if task.landowner and task.landowner.landowner_profile else 'N/A' }}</strong>
+                                {% if task.landowner and task.landowner.landowner_profile and task.landowner.landowner_profile.aadhaar_card_id %}
+                                    <br><span style="font-size: 0.85em; color: var(--text-secondary)">Aadhaar: {{ task.landowner.landowner_profile.aadhaar_card_id }}</span>
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td style="padding: 1rem;">

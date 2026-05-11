@@ -263,6 +263,12 @@ def process_task(task_id):
                 
             task.status = 'completed'
             task.completed_at = datetime.utcnow()
+        
+            # Approve company profile
+            if task.company and task.company.company_profile:
+                task.company.company_profile.verification_status = 'approved'
+                task.company.company_profile.site_verified = True
+            
             db.session.commit()
             flash('Verification report submitted successfully.', 'success')
             return redirect(url_for('dashboard.tasks'))
@@ -341,9 +347,10 @@ def process_task(task_id):
             task.completed_at = datetime.utcnow()
             task.report_data = json.dumps({'gross_credits': gross, 'net_credits': net})
             
-            # Update landowner profile verification status
+            # Approve landowner profile
             if task.landowner and task.landowner.landowner_profile:
-                task.landowner.landowner_profile.verification_status = 'submitted'
+                task.landowner.landowner_profile.verification_status = 'approved'
+                task.landowner.landowner_profile.site_verified = True
 
             db.session.commit()
             flash(f'Assessment submitted successfully! {net:.4f} tCO2e active credits registered.', 'success')

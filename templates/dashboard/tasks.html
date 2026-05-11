@@ -61,7 +61,15 @@
                             {% endif %}
                         </td>
                         <td style="padding: 1rem;">
-                            <button class="btn" style="padding: 0.5rem 1rem; width: auto; font-size: 0.9em;">Process Task</button>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <a href="{{ url_for('dashboard.process_task', task_id=task.id) }}" class="btn" style="padding: 0.5rem 1rem; width: auto; font-size: 0.9em;">Process Task</a>
+                                <button type="button"
+                                    class="btn btn-reject"
+                                    style="padding: 0.5rem 1rem; width: auto; font-size: 0.9em; background: #ef4444; border: none; cursor: pointer;"
+                                    onclick="openRejectModal({{ task.id }})">
+                                    Reject
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     {% else %}
@@ -86,6 +94,7 @@
                         <th style="padding: 1rem;">Client Name</th>
                         <th style="padding: 1rem;">Processed On</th>
                         <th style="padding: 1rem;">Status</th>
+                        <th style="padding: 1rem;">Rejection Reason</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,13 +128,22 @@
                             {% if task.status == 'completed' %}
                                 <span class="status-badge status-approved" style="text-transform: none;">Verified</span>
                             {% else %}
-                                <span class="status-badge status-pending" style="background: #ef4444; text-transform: none;">Rejected</span>
+                                <span class="status-badge status-pending" style="background: #ef4444; text-transform: none;">
+                                    Rejected{% if task.rejected_by %} (by {{ task.rejected_by }}){% endif %}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem;">
+                            {% if task.rejection_reason %}
+                                <span style="font-size: 0.9em; color: #ef4444;">{{ task.rejection_reason }}</span>
+                            {% else %}
+                                <span class="text-secondary" style="font-size: 0.9em;">—</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="4" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No past verification tasks.</td>
+                        <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No past verification tasks.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -133,4 +151,41 @@
         </div>
     </div>
 </div>
+
+<!-- Rejection Modal -->
+<div id="rejectModal" style="display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+    <div style="background: var(--surface-color, #1a1a2e); border: 1px solid var(--surface-border); border-radius: 12px; padding: 2rem; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <h3 style="margin-bottom: 0.5rem; color: #ef4444;">⚠ Reject Verification Task</h3>
+        <p class="text-secondary" style="font-size: 0.9em; margin-bottom: 1.5rem;">Please provide a reason for rejection. This will be visible to the admin and the client.</p>
+        <form id="rejectForm" method="POST" action="">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="rejection_reason" style="display:block; margin-bottom:0.5rem; color: var(--text-secondary);">Rejection Reason <span style="color:#ef4444;">*</span></label>
+                <textarea id="rejection_reason" name="rejection_reason" rows="4" required
+                    placeholder="e.g. Insufficient documentation, site not accessible, conflicting data..."
+                    style="width:100%; padding:0.8rem; background:var(--background-color); border:1px solid #ef4444; border-radius:6px; color:var(--text-color); font-family:inherit; resize:vertical;"></textarea>
+            </div>
+            <div style="display:flex; gap:1rem;">
+                <button type="submit" class="btn" style="background:#ef4444; flex:1;">Confirm Rejection</button>
+                <button type="button" class="btn" onclick="closeRejectModal()" style="background:var(--surface-border); flex:1;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openRejectModal(taskId) {
+    document.getElementById('rejectForm').action = '/dashboard/task/' + taskId + '/reject';
+    const modal = document.getElementById('rejectModal');
+    modal.style.display = 'flex';
+    document.getElementById('rejection_reason').value = '';
+    document.getElementById('rejection_reason').focus();
+}
+function closeRejectModal() {
+    document.getElementById('rejectModal').style.display = 'none';
+}
+// Close on backdrop click
+document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) closeRejectModal();
+});
+</script>
 {% endblock %}

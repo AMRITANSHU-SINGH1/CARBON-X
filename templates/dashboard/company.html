@@ -23,6 +23,20 @@
         </div>
     </div>
     
+    {% elif profile.verification_status == 'rejected' %}
+    {% set latest_task = current_user.company_verification_tasks | sort(attribute='completed_at', reverse=True) | first if current_user.company_verification_tasks else none %}
+    <div class="alert mt-4" style="border-left: 4px solid #ef4444; background: rgba(239,68,68,0.08); padding: 1.5rem; border-radius: 8px;">
+        <h3 style="color: #ef4444; margin-bottom: 0.75rem;">⚠ Verification Rejected</h3>
+        <p>Your verification request has been rejected. Please review the reason below and resubmit after making corrections.</p>
+        {% if latest_task and latest_task.rejection_reason %}
+        <div style="margin-top: 1rem; padding: 1rem; background: rgba(239,68,68,0.12); border-radius: 6px; border: 1px solid rgba(239,68,68,0.3);">
+            <p style="font-size: 0.85em; color: var(--text-secondary); margin-bottom: 0.3rem;">Rejection Reason{% if latest_task.rejected_by %} (by {{ latest_task.rejected_by }}){% endif %}:</p>
+            <p style="color: #ef4444; font-weight: 500;">{{ latest_task.rejection_reason }}</p>
+        </div>
+        {% endif %}
+        <a href="{{ url_for('verification.company_form') }}" class="btn mt-4" style="max-width: 220px; background: #ef4444;">Resubmit Details</a>
+    </div>
+    
     {% else %}
     <div class="alert alert-warning mt-4 text-center">
         <h3>Verification Status: <span class="status-badge status-{{ profile.verification_status }}">{{ profile.verification_status }}</span></h3>

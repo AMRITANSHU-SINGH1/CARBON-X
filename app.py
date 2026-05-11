@@ -6,6 +6,11 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    # Ensure upload folder exists
+    import os
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+
     # Initialize Flask extensions
     db.init_app(app)
     login_manager.init_app(app)

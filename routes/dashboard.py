@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from extensions import db
-from models import User, SubordinateProfile, VerificationTask, CarbonAssessment, CarbonCredit
+from models import User, SubordinateProfile, VerificationTask, CarbonAssessment, CarbonCredit, EmissionReport
 from datetime import datetime
 import os
 import json
@@ -239,6 +239,61 @@ def process_task(task_id):
         return redirect(url_for('dashboard.tasks'))
         
     if request.method == 'POST':
+        if task.company_id:
+            # Handle company emission report
+            diesel = float(request.form.get('diesel_liters', 0))
+            gas = float(request.form.get('gas_cubic_meters', 0))
+            coal = float(request.form.get('coal_metric_tons', 0))
+            electricity = float(request.form.get('electricity_kwh', 0))
+            reported_date_str = request.form.get('reported_date')
+            
+            try:
+                reported_date = datetime.strptime(reported_date_str, '%Y-%m-%d')
+            except (ValueError, TypeError):
+                reported_date = datetime.utcnow()
+
+            # Individual Calculations (Metric Tons CO2e)
+            electricity_tons = electricity * 0.00082
+            diesel_tons = diesel * 0.00268
+            gas_tons = gas * 0.00202
+            coal_tons = coal * 2.42
+
+            total_emission = electricity_tons + diesel_tons + gas_tons + coal_tons
+            total_required_credits = total_emission
+
+            raw_activity_data = json.dumps({
+                'diesel_liters': diesel,
+                'gas_cubic_meters': gas,
+                'coal_metric_tons': coal,
+                'electricity_kwh': electricity
+            })
+
+            emission_report = EmissionReport(
+                company_id=task.company_id,
+                company_name=task.company.company_profile.company_name,
+                task_id=task.id,
+                subordinate_id=current_user.id,
+                total_emission=total_emission,
+                total_required_credits=total_required_credits,
+                reported_date=reported_date,
+                raw_activity_data=raw_activity_data,
+                status='Submitted'
+            )
+            db.session.add(emission_report)
+
+            task.status = 'completed'
+            task.completed_at = datetime.utcnow()
+            task.report_data = json.dumps({'total_emission': total_emission, 'required_credits': total_required_credits})
+
+            # Approve company profile
+            if task.company and task.company.company_profile:
+                task.company.company_profile.verification_status = 'approved'
+                task.company.company_profile.site_verified = True
+                
+            db.session.commit()
+            flash(f'Emission report submitted successfully! Total Emission: {total_emission:.4f} Metric Tons CO2e.', 'success')
+            return redirect(url_for('dashboard.tasks'))
+            
         if task.landowner_id:
             # Handle landowner carbon assessment
             land_name = request.form.get('land_name', '').strip()
@@ -323,7 +378,9 @@ def process_task(task_id):
             return redirect(url_for('dashboard.tasks'))
 
     # GET request
-    if task.landowner_id:
+    if task.company_id:
+        return render_template('dashboard/emission_report.html', task=task)
+    elif task.landowner_id:
         return render_template('dashboard/subordinate_form.html', task=task)
     
     return redirect(url_for('dashboard.tasks'))

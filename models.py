@@ -141,4 +141,27 @@ class CarbonCredit(db.Model):
 
 
 
+class EmissionReport(db.Model):
+    """Stores the detailed emission calculations for companies."""
+    __tablename__ = 'emission_reports'
 
+    id = db.Column(db.Integer, primary_key=True)
+    company_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    company_name = db.Column(db.String(120), nullable=False)
+    
+    # Task and subordinate links
+    task_id = db.Column(db.Integer, db.ForeignKey('verification_tasks.id'), nullable=False)
+    subordinate_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    # Emission values
+    total_emission = db.Column(db.Float, nullable=False, default=0.0)
+    total_required_credits = db.Column(db.Float, nullable=False, default=0.0)
+    
+    reported_date = db.Column(db.DateTime, default=datetime.utcnow)
+    raw_activity_data = db.Column(db.Text, nullable=False) # JSON storing the scope 1 & 2 inputs
+    status = db.Column(db.String(20), default='Submitted', nullable=False)
+
+    # Relationships
+    company_user = db.relationship('User', foreign_keys=[company_id], backref='emission_reports')
+    task = db.relationship('VerificationTask', backref=db.backref('emission_report', uselist=False))
+    subordinate = db.relationship('User', foreign_keys=[subordinate_id], backref='submitted_emission_reports')

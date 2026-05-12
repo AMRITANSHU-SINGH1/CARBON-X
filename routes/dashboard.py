@@ -239,41 +239,7 @@ def process_task(task_id):
         return redirect(url_for('dashboard.tasks'))
         
     if request.method == 'POST':
-        if task.company_id:
-            # Handle company file upload
-            document_file = request.files.get('document')
-            document_path = None
-            if document_file and document_file.filename:
-                filename = secure_filename(document_file.filename)
-                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                unique_filename = f"task_{task.id}_{timestamp}_{filename}"
-                save_path = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_filename)
-                document_file.save(save_path)
-                document_path = unique_filename
-                
-            form_data = {
-                'sources_of_emission': request.form.get('sources_of_emission'),
-                'amount_of_emission': request.form.get('amount_of_emission'),
-                'daily_emission': request.form.get('daily_emission'),
-                'is_verified': request.form.get('is_verified') == 'on'
-            }
-            task.report_data = json.dumps(form_data)
-            if document_path:
-                task.document_path = document_path
-                
-            task.status = 'completed'
-            task.completed_at = datetime.utcnow()
-        
-            # Approve company profile
-            if task.company and task.company.company_profile:
-                task.company.company_profile.verification_status = 'approved'
-                task.company.company_profile.site_verified = True
-            
-            db.session.commit()
-            flash('Verification report submitted successfully.', 'success')
-            return redirect(url_for('dashboard.tasks'))
-            
-        elif task.landowner_id:
+        if task.landowner_id:
             # Handle landowner carbon assessment
             land_name = request.form.get('land_name', '').strip()
             total_area = request.form.get('total_area', '0').strip()
@@ -357,9 +323,7 @@ def process_task(task_id):
             return redirect(url_for('dashboard.tasks'))
 
     # GET request
-    if task.company_id:
-        return render_template('dashboard/process_task.html', task=task)
-    elif task.landowner_id:
+    if task.landowner_id:
         return render_template('dashboard/subordinate_form.html', task=task)
     
     return redirect(url_for('dashboard.tasks'))

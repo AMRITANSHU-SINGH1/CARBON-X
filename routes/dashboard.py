@@ -42,7 +42,28 @@ def index():
         if current_user.landowner_profile.verification_status == 'pending':
             flash('Please complete your verification first.', 'warning')
             return redirect(url_for('verification.landowner_form'))
-        return render_template('dashboard/landowner.html', profile=current_user.landowner_profile)
+            
+        # Fetch the most recent completed assessment
+        latest_assessment = CarbonAssessment.query.filter_by(
+            landowner_id=current_user.id,
+            status='Completed'
+        ).order_by(CarbonAssessment.created_at.desc()).first()
+        
+        latest_credit = None
+        inventory_data = []
+        if latest_assessment:
+            latest_credit = CarbonCredit.query.filter_by(carbon_assessment_id=latest_assessment.id).first()
+            if latest_assessment.raw_data:
+                try:
+                    inventory_data = json.loads(latest_assessment.raw_data)
+                except json.JSONDecodeError:
+                    inventory_data = []
+                    
+        return render_template('dashboard/landowner.html', 
+                               profile=current_user.landowner_profile,
+                               assessment=latest_assessment,
+                               credit=latest_credit,
+                               inventory_data=inventory_data)
     else:
         return "Invalid role", 400
 
@@ -359,7 +380,7 @@ def process_task(task_id):
                 diesel_liters=diesel_l,
                 gross_credits=gross,
                 total_credits_calculated=net,
-                status='Pending'
+                status='Completed'
             )
             db.session.add(assessment)
             db.session.flush() # Get assessment ID for the credit record

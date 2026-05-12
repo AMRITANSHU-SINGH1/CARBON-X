@@ -22,7 +22,21 @@ def index():
         if current_user.company_profile.verification_status == 'pending':
             flash('Please complete your verification first.', 'warning')
             return redirect(url_for('verification.company_form'))
-        return render_template('dashboard/company.html', profile=current_user.company_profile)
+            
+        # Fetch the most recent emission report
+        latest_report = EmissionReport.query.filter_by(
+            company_id=current_user.id, 
+            status='Submitted'
+        ).order_by(EmissionReport.reported_date.desc()).first()
+        
+        activity_data = {}
+        if latest_report and latest_report.raw_activity_data:
+            try:
+                activity_data = json.loads(latest_report.raw_activity_data)
+            except json.JSONDecodeError:
+                activity_data = {}
+                
+        return render_template('dashboard/company.html', profile=current_user.company_profile, report=latest_report, activity_data=activity_data)
     elif current_user.role == 'landowner':
         # Check verification status
         if current_user.landowner_profile.verification_status == 'pending':

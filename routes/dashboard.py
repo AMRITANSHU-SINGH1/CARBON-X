@@ -5,8 +5,10 @@ from werkzeug.utils import secure_filename
 from extensions import db
 from models import User, SubordinateProfile, VerificationTask, CarbonAssessment, CarbonCredit, EmissionReport, CarbonTransaction
 from datetime import datetime
+from sqlalchemy import func
 import os
 import json
+import hashlib
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -35,8 +37,23 @@ def index():
                 activity_data = json.loads(latest_report.raw_activity_data)
             except json.JSONDecodeError:
                 activity_data = {}
-                
-        return render_template('dashboard/company.html', profile=current_user.company_profile, report=latest_report, activity_data=activity_data)
+
+        # ── Impact Analytics ─────────────────────────────────────────
+        company_profile = current_user.company_profile
+        total_carbon_offset = db.session.query(
+            func.coalesce(func.sum(CarbonTransaction.amount_purchased), 0)
+        ).filter(CarbonTransaction.buyer_id == company_profile.id).scalar() or 0
+
+        is_carbon_neutral = False
+        if latest_report and latest_report.Required_credits is not None:
+            is_carbon_neutral = latest_report.Required_credits <= 0
+
+        return render_template('dashboard/company.html',
+                               profile=company_profile,
+                               report=latest_report,
+                               activity_data=activity_data,
+                               total_carbon_offset=total_carbon_offset,
+                               is_carbon_neutral=is_carbon_neutral)
     elif current_user.role == 'landowner':
         # Check verification status
         if current_user.landowner_profile.verification_status == 'pending':
@@ -62,13 +79,25 @@ def index():
                     inventory_data = json.loads(latest_assessment.raw_data)
                 except json.JSONDecodeError:
                     inventory_data = []
-                    
+
+        # ── Landowner Impact Analytics ───────────────────────────────
+        landowner_profile = current_user.landowner_profile
+        total_revenue = db.session.query(
+            func.coalesce(func.sum(CarbonTransaction.total_price), 0)
+        ).filter(CarbonTransaction.seller_id == landowner_profile.id).scalar() or 0
+
+        total_credits_sold = db.session.query(
+            func.coalesce(func.sum(CarbonTransaction.amount_purchased), 0)
+        ).filter(CarbonTransaction.seller_id == landowner_profile.id).scalar() or 0
+
         return render_template('dashboard/landowner.html', 
-                               profile=current_user.landowner_profile,
+                               profile=landowner_profile,
                                assessment=latest_assessment,
                                credit=latest_credit,
                                inventory_data=inventory_data,
-                               total_value=total_value)
+                               total_value=total_value,
+                               total_revenue=total_revenue,
+                               total_credits_sold=total_credits_sold)
     else:
         return "Invalid role", 400
 
@@ -623,13 +652,76 @@ def execute_purchase(credit_id):
 
         # Commit
         db.session.commit()
-        return jsonify({
-            'success': True,
-            'message': f'Successfully purchased {quantity} credits for ₹ {total_price:,.2f}.',
-            'new_wallet_balance': buyer.wallet_balance,
-            'new_credits_owned': report.credits_owned
-        })
+        flash(f'Successfully purchased {quantity} credits for ₹ {total_price:,.2f}.', 'success')
+        return redirect(url_for('dashboard.history'))
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'Transaction failed: {str(e)}'}), 500
+        flash(f'Transaction failed: {str(e)}', 'danger')
+        return redirect(url_for('marketplace.index'))
+
+
+@dashboard_bp.route('/history')
+@login_required
+def history():
+    """Audit Ledger — verifiable transaction history."""
+    transactions = []
+
+    if current_user.role == 'company' and current_user.company_profile:
+        transactions = CarbonTransaction.query.filter_by(
+            buyer_id=current_user.company_profile.id
+        ).order_by(CarbonTransaction.timestamp.desc()).all()
+
+    elif current_user.role == 'landowner' and current_user.landowner_profile:
+        transactions = CarbonTransaction.query.filter_by(
+            seller_id=current_user.landowner_profile.id
+        ).order_by(CarbonTransaction.timestamp.desc()).all()
+
+    else:
+        flash('Access denied.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
+    return render_template('dashboard/history.html',
+                           transactions=transactions,
+                           role=current_user.role)
+
+
+@dashboard_bp.route('/view-certificate')
+@login_required
+def view_certificate():
+    """Carbon Neutrality Certificate — only for qualified companies."""
+    if current_user.role != 'company':
+        flash('Access denied.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
+    profile = current_user.company_profile
+    report = EmissionReport.query.filter_by(
+        company_id=current_user.id,
+        status='Submitted'
+    ).order_by(EmissionReport.reported_date.desc()).first()
+
+    if not report or report.Required_credits is None or report.Required_credits > 0:
+        flash('You have not yet achieved Carbon Neutral status.', 'warning')
+        return redirect(url_for('dashboard.index'))
+
+    # Total offset
+    total_offset = db.session.query(
+        func.coalesce(func.sum(CarbonTransaction.amount_purchased), 0)
+    ).filter(CarbonTransaction.buyer_id == profile.id).scalar() or 0
+
+    # Verification hash from most recent transaction
+    latest_txn = CarbonTransaction.query.filter_by(
+        buyer_id=profile.id
+    ).order_by(CarbonTransaction.timestamp.desc()).first()
+
+    verification_hash = 'N/A'
+    if latest_txn:
+        raw = f'CX-TXN-{latest_txn.id}-{profile.id}-{total_offset}'
+        verification_hash = hashlib.sha256(raw.encode()).hexdigest().upper()
+
+    return render_template('dashboard/certificate.html',
+                           profile=profile,
+                           report=report,
+                           total_offset=total_offset,
+                           verification_hash=verification_hash,
+                           achievement_date=datetime.utcnow())

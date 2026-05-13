@@ -12,6 +12,18 @@
     <div class="alert alert-success mt-4">
         Your green cover is verified! You can now mint and list carbon credits.
     </div>
+
+    {# ── Landowner Impact Analytics ─────────────────────────────── #}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px; padding: 1.5rem;">
+            <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Total Revenue Generated</p>
+            <h3 style="font-size: 2rem; margin: 0; color: var(--primary-color);">₹ {{ "{:,.2f}".format(total_revenue | default(0)) }}</h3>
+        </div>
+        <div style="background: var(--surface-border); border-radius: 8px; padding: 1.5rem;">
+            <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Total Credits Sold</p>
+            <h3 style="font-size: 2rem; margin: 0;">{{ "{:,.2f}".format(total_credits_sold | default(0)) }} <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-secondary);">tCO₂e</span></h3>
+        </div>
+    </div>
     
     {% if assessment %}
     <div class="card mt-4 mb-4" style="border: 1px solid var(--primary-color);">
@@ -163,9 +175,9 @@
             <button class="btn mt-4" style="background: var(--surface-border)">Mint Now</button>
         </div>
         <div class="card">
-            <h3>My Listed Assets</h3>
-            <p class="text-secondary mt-4">View and manage your active marketplace listings.</p>
-            <button class="btn mt-4" style="background: var(--surface-border)">View Inventory</button>
+            <h3>Transaction History</h3>
+            <p class="text-secondary mt-4">View your complete audit ledger of credit sales.</p>
+            <a href="{{ url_for('dashboard.history') }}" class="btn mt-4" style="background: var(--surface-border)">View History</a>
         </div>
     </div>
     

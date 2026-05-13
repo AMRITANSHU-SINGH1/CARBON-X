@@ -12,6 +12,9 @@
         <div class="nav-links">
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('dashboard.index') }}">Dashboard</a>
+                {% if current_user.role in ['company', 'landowner'] %}
+                <a href="{{ url_for('dashboard.history') }}">History</a>
+                {% endif %}
                 {% if current_user.role == 'company' %}
                 <a href="{{ url_for('marketplace.index') }}">Marketplace</a>
                 {% endif %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Welcome Back to Carbon-X</h2>
+    <p class="text-center mb-4 text-secondary">Login to your centralized tracking dashboard.</p>
+    
+    <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn mt-4">Sign In</button>
+    </form>
+</div>
+{% endblock %}

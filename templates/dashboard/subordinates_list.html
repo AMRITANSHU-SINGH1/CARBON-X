@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2><span style="color: var(--primary-color)">Subordinates</span> List</h2>
+        <a href="{{ url_for('dashboard.index') }}" class="btn" style="width: auto; padding: 0.5rem 1rem; background: var(--surface-border)">Back to Dashboard</a>
+    </div>
+    
+    <p class="text-secondary mt-4">Manage regional validators and ecosystem delegates.</p>
+    
+    <div class="card mt-4" style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--surface-border);">
+                    <th style="padding: 1rem;">ID</th>
+                    <th style="padding: 1rem;">Name</th>
+                    <th style="padding: 1rem;">Username</th>
+                    <th style="padding: 1rem;">Email</th>
+                    <th style="padding: 1rem;">District</th>
+                    <th style="padding: 1rem;">Date of Join</th>
+                    <th style="padding: 1rem;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in subordinates %}
+                <tr style="border-bottom: 1px solid var(--surface-border);">
+                    <td style="padding: 1rem; font-weight: bold;">{{ sub.unique_id }}</td>
+                    <td style="padding: 1rem;">{{ sub.subordinate_profile.full_name if sub.subordinate_profile else 'N/A' }}</td>
+                    <td style="padding: 1rem;">{{ sub.username }}</td>
+                    <td style="padding: 1rem;">{{ sub.email }}</td>
+                    <td style="padding: 1rem;">{{ sub.subordinate_profile.district if sub.subordinate_profile else 'N/A' }}</td>
+                    <td style="padding: 1rem;">{{ sub.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td style="padding: 1rem;">
+                        <a href="{{ url_for('dashboard.edit_subordinate', sub_id=sub.id) }}" class="btn" style="padding: 0.25rem 0.75rem; font-size: 0.9em; width: auto; background: var(--primary-color);">Edit</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="padding: 1rem; text-align: center; color: var(--text-secondary);">No subordinates found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

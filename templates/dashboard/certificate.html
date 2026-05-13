@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .certificate-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .certificate {
+        background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+        border: 3px solid #DAA520;
+        border-radius: 16px;
+        padding: 3rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 40px rgba(218, 165, 32, 0.15), 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .certificate::before {
+        content: '';
+        position: absolute;
+        top: 12px; left: 12px; right: 12px; bottom: 12px;
+        border: 1px solid rgba(218, 165, 32, 0.3);
+        border-radius: 10px;
+        pointer-events: none;
+    }
+    .certificate::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(ellipse at center, rgba(218,165,32,0.04) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .cert-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .cert-seal {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #FFD700, #DAA520, #B8860B);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.2rem;
+        box-shadow: 0 4px 20px rgba(218, 165, 32, 0.4);
+        animation: pulse-gold 3s ease-in-out infinite;
+    }
+    @keyframes pulse-gold {
+        0%, 100% { box-shadow: 0 4px 20px rgba(218, 165, 32, 0.4); }
+        50% { box-shadow: 0 4px 35px rgba(218, 165, 32, 0.7); }
+    }
+    .cert-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #FFD700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+    }
+    .cert-subtitle {
+        font-size: 1rem;
+        color: #DAA520;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+    }
+    .cert-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #DAA520, transparent);
+        margin: 2rem 0;
+    }
+    .cert-body {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .cert-company-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(218, 165, 32, 0.2);
+    }
+    .cert-description {
+        font-size: 1em;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .cert-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    .cert-metric {
+        background: rgba(218, 165, 32, 0.06);
+        border: 1px solid rgba(218, 165, 32, 0.2);
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    .cert-metric-label {
+        font-size: 0.8em;
+        color: #DAA520;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.5rem;
+    }
+    .cert-metric-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+    .cert-hash {
+        margin-top: 2rem;
+        padding: 1rem 1.5rem;
+        background: rgba(0,0,0,0.3);
+        border-radius: 8px;
+        border: 1px solid rgba(218, 165, 32, 0.15);
+        text-align: center;
+    }
+    .cert-hash-label {
+        font-size: 0.75em;
+        color: #DAA520;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+    }
+    .cert-hash-value {
+        font-family: monospace;
+        font-size: 0.7em;
+        color: var(--text-secondary);
+        word-break: break-all;
+        line-height: 1.5;
+    }
+    .cert-footer {
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 0.8em;
+        color: var(--text-secondary);
+    }
+    .print-actions {
+        text-align: center;
+        margin-top: 2rem;
+    }
+    @media print {
+        .navbar, .flash-messages, .print-actions, .back-link { display: none !important; }
+        body { background: #fff !important; color: #111 !important; }
+        main { padding: 0 !important; }
+        .certificate-wrapper { max-width: 100%; }
+        .certificate {
+            background: #fff !important;
+            border-color: #B8860B !important;
+            box-shadow: none !important;
+            color: #111 !important;
+        }
+        .cert-company-name, .cert-metric-value { color: #111 !important; }
+        .cert-description, .cert-hash-value, .cert-footer { color: #444 !important; }
+        .cert-seal { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+        .cert-metric { print-color-adjust: exact; -webkit-print-color-adjust: exact; background: #fdf6e3 !important; }
+    }
+</style>
+
+<div class="certificate-wrapper">
+    <a href="{{ url_for('dashboard.index') }}" class="btn back-link" style="max-width: 180px; margin-bottom: 2rem; font-size: 0.9em; padding: 0.6rem 1rem;">← Back to Dashboard</a>
+
+    <div class="certificate" id="certificate-print-area">
+        <div class="cert-header">
+            <div class="cert-seal">🌿</div>
+            <div class="cert-title">Certified Carbon Neutral</div>
+            <div class="cert-subtitle">Carbon-X Verification Platform</div>
+        </div>
+
+        <div class="cert-divider"></div>
+
+        <div class="cert-body">
+            <p style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 0.5rem;">This certifies that</p>
+            <div class="cert-company-name">{{ profile.company_name }}</div>
+            <p class="cert-description">
+                has successfully offset 100% of its reported carbon emissions through the acquisition
+                and retirement of verified carbon credits on the Carbon-X marketplace, thereby achieving
+                <strong style="color: #FFD700;">Net-Zero Carbon Status</strong>.
+            </p>
+        </div>
+
+        <div class="cert-metrics">
+            <div class="cert-metric">
+                <div class="cert-metric-label">Total Offset Achieved</div>
+                <div class="cert-metric-value">{{ "{:,.2f}".format(total_offset | default(0)) }} tCO₂e</div>
+            </div>
+            <div class="cert-metric">
+                <div class="cert-metric-label">Achievement Date</div>
+                <div class="cert-metric-value">{{ achievement_date.strftime('%d %B %Y') }}</div>
+            </div>
+            <div class="cert-metric">
+                <div class="cert-metric-label">Original Emission</div>
+                <div class="cert-metric-value">{{ "{:,.2f}".format(report.total_emission | default(0)) }} tCO₂e</div>
+            </div>
+            <div class="cert-metric">
+                <div class="cert-metric-label">Registration No.</div>
+                <div class="cert-metric-value">{{ profile.registration_number }}</div>
+            </div>
+        </div>
+
+        <div class="cert-hash">
+            <div class="cert-hash-label">Verification Hash (SHA-256)</div>
+            <div class="cert-hash-value">{{ verification_hash }}</div>
+        </div>
+
+        <div class="cert-footer">
+            Issued by Carbon-X Decentralized Carbon Marketplace &bull;
+            {{ achievement_date.strftime('%Y-%m-%d %H:%M UTC') }}
+        </div>
+    </div>
+
+    <div class="print-actions">
+        <button class="btn" style="max-width: 200px; margin: 0 auto;" onclick="window.print()">🖨 Print Certificate</button>
+    </div>
+</div>
+{% endblock %}

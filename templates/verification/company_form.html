@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>{% if is_resubmission %}Resubmit{% else %}Company Emission{% endif %} Verification</h2>
+    <p class="text-center mb-4 text-secondary">Please submit your carbon emission data for validation by our ecosystem administrators.</p>
+    
+    {% if is_resubmission %}
+    <div class="alert mt-4" style="border-left: 4px solid #ef4444; background: rgba(239,68,68,0.08); padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <strong style="color: #ef4444;">Your previous submission was rejected.</strong>
+        <p style="margin-top: 0.4rem; font-size: 0.9em; color: var(--text-secondary);">Please review and correct your details below, then resubmit. Your previous data has been pre-filled for reference.</p>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        Status: <span class="status-badge status-{{ current_user.company_profile.verification_status }}">{{ current_user.company_profile.verification_status }}</span>
+    </div>
+    {% endif %}
+
+    {% if current_user.company_profile.verification_status in ('pending', 'rejected') %}
+    <form method="POST" action="{{ url_for('verification.company_form') }}">
+        <div class="form-group">
+            <label for="emission_data">Detailed Emission Data Breakdown (Annual Tons of CO2e)</label>
+            <textarea id="emission_data" name="emission_data" rows="5" required
+                placeholder="Provide breakdown of Scope 1, Scope 2, and Scope 3 emissions...">{{ current_user.company_profile.emission_data or '' }}</textarea>
+        </div>
+        <button type="submit" class="btn mt-4">
+            {% if is_resubmission %}Resubmit for Verification{% else %}Submit for Verification{% endif %}
+        </button>
+    </form>
+    {% else %}
+    <div class="text-center mt-4">
+        <p>Your verification is currently under review or has been processed.</p>
+        <a href="{{ url_for('dashboard.index') }}" class="btn mt-4">Go to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

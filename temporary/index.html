@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carbon-X | Decentralized Carbon Credit Marketplace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    }
+  </style>
+</head>
+<body class="gradient-bg text-slate-100">
+  <nav class="bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 sticky top-0 z-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <a href="index.html" class="text-2xl font-bold text-emerald-400 tracking-tight">CARBON-X</a>
+          <!-- <span class="ml-3 text-xs bg-emerald-900/50 text-emerald-300 px-2 py-0.5 rounded-full">DBMS Project</span> -->
+        </div>
+        <!-- <div class="hidden md:flex space-x-6">
+           <a href="company_dashboard.html" class="hover:text-emerald-400 transition">Dashboard</a>
+          <a href="company_emissions.html" class="hover:text-emerald-400 transition">Emissions</a>
+          <a href="company_marketplace.html" class="hover:text-emerald-400 transition">Marketplace</a> -->
+          <!-- <a href="transactions.html" class="hover:text-emerald-400 transition">Transactions</a> -->
+          <!-- <a href="profile.html" class="hover:text-emerald-400 transition">Profile</a>
+          <a href="admin.html" class="hover:text-emerald-400 transition">Admin</a>
+        </div>  -->
+        <div class="flex space-x-2">
+          
+          <!-- <a href="company_login.html" class="px-4 py-1.5 text-sm bg-emerald-600 rounded-lg hover:bg-emerald-500 transition">Company Login</a>
+          <a href="landowner_login.html" class="px-4 py-1.5 text-sm bg-emerald-600 rounded-lg hover:bg-emerald-500 transition">Landowner Login</a> -->
+          <a href="adminlogin.html" class="px-4 py-1.5 text-sm bg-emerald-600 rounded-lg hover:bg-emerald-500 transition">Login</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <main class="container mx-auto px-4 py-16 sm:py-24">
+    <div class="text-center max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 bg-emerald-900/30 px-4 py-1.5 rounded-full text-emerald-300 text-sm mb-6">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
+         Authenticated | Transparent | Verifiable
+      </div>
+      <h1 class="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent mb-6">
+        Decentralized Carbon Credit Marketplace
+      </h1>
+      <p class="text-lg sm:text-xl text-slate-300 mb-8">
+        Track industrial emissions, earn carbon credits, and trade on an marketplace.
+        <!-- Built with <span class="text-emerald-400">ACID transactions, triggers, and complex SQL</span>. -->
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="company_register.html" class="px-6 py-3 bg-emerald-600 rounded-xl font-semibold hover:bg-emerald-500 transition shadow-lg">Company Registration→</a>
+        <!-- <a href="dashboard.html" class="px-6 py-3 bg-slate-800 rounded-xl font-semibold hover:bg-slate-700 transition">View Demo Dashboard</a> -->
+         <a href="landowner_register.html" class="px-6 py-3 bg-emerald-600 rounded-xl font-semibold hover:bg-emerald-500 transition shadow-lg">Carbon Credit Holder Registration→</a>
+        <!-- <a href="dashboard.html" class="px-6 py-3 bg-slate-800 rounded-xl font-semibold hover:bg-slate-700 transition">View Demo Dashboard</a> -->
+      </div>
+    </div>
+
+    <!-- ========== ABOUT SECTION (NEW) ========== -->
+    <div class="mt-28 max-w-5xl mx-auto">
+      <!-- Section title -->
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">About <span class="text-emerald-400">Carbon-X</span></h2>
+        <div class="w-20 h-1 bg-emerald-500 mx-auto rounded-full"></div>
+        <p class="text-slate-300 mt-4 max-w-2xl mx-auto">Bridging the gap between industrial accountability and nature-based solutions</p>
+      </div>
+
+      <!-- Mission statement card -->
+      <div class="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700 mb-12">
+        <div class="flex flex-col md:flex-row gap-6 items-center">
+          <div class="text-5xl">🌍</div>
+          <div>
+            <h3 class="text-2xl font-semibold text-emerald-400 mb-2">Our Mission</h3>
+            <p class="text-slate-300 leading-relaxed">Carbon-X is a transparent, blockchain-inspired carbon credit ecosystem where industrial emitters can offset their footprint by purchasing verified credits from landowners who practice regenerative agriculture, reforestation, and conservation. We aim to make carbon trading accessible, auditable, and impactful.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- How it works: 3 steps -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-slate-800/30 rounded-xl p-6 border border-slate-700 text-center hover:border-emerald-500 transition">
+          <div class="text-4xl mb-3">🏭</div>
+          <h3 class="text-xl font-bold text-emerald-400 mb-2">1. Report Emissions</h3>
+          <p class="text-slate-400 text-sm">Companies log their CO₂ emissions through verified methods. Credits are allocated based on reduction targets.</p>
+        </div>
+        <div class="bg-slate-800/30 rounded-xl p-6 border border-slate-700 text-center hover:border-emerald-500 transition">
+          <div class="text-4xl mb-3">🌾</div>
+          <h3 class="text-xl font-bold text-emerald-400 mb-2">2. Generate Credits</h3>
+          <p class="text-slate-400 text-sm">Landowners earn carbon credits by sequestering carbon via reforestation, soil management, or conservation projects.</p>
+        </div>
+        <div class="bg-slate-800/30 rounded-xl p-6 border border-slate-700 text-center hover:border-emerald-500 transition">
+          <div class="text-4xl mb-3">🔄</div>
+          <h3 class="text-xl font-bold text-emerald-400 mb-2">3. Trade & Offset</h3>
+          <p class="text-slate-400 text-sm">Companies buy credits on the marketplace. Each transaction is immutable, transparent, and retired upon use.</p>
+        </div>
+      </div>
+
+      <!-- Key features grid -->
+      <div class="bg-slate-800/20 rounded-2xl p-6 md:p-8 border border-slate-700 mb-12">
+        <h3 class="text-2xl font-semibold text-center mb-8">Why Carbon-X?</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl">✓</span>
+            <div><span class="font-medium">Verifiable Credits</span> – Every credit is linked to a real land project with documentation.</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl">✓</span>
+            <div><span class="font-medium">Real-time Marketplace</span> – Dynamic pricing, instant purchases, and portfolio tracking.</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl">✓</span>
+            <div><span class="font-medium">Dual Role System</span> – Separate dashboards for companies (emitters) and landowners (suppliers).</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl">✓</span>
+            <div><span class="font-medium">Admin Oversight</span> – Leader dashboard to verify listings, audit transactions, and manage users.</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl">✓</span>
+            <div><span class="font-medium">Secure & Scalable</span> – Built with parameterized queries, ready for SQL backend integration.</div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xl">✓</span>
+            <div><span class="font-medium">Impact Tracking</span> – Total CO₂ offset, total credits retired, and net-zero progress.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call to action / stats (optional but nice) -->
+      <div class="text-center bg-gradient-to-r from-emerald-900/20 to-cyan-900/20 rounded-2xl p-8 border border-emerald-800/30">
+        <p class="text-slate-200 text-lg mb-3">Join the movement toward a carbon-neutral future.</p>
+        <div class="flex justify-center gap-6 text-sm text-slate-400">
+          <span>✅ Verified projects</span>
+          <span>🌱 Real climate action</span>
+          <span>📊 Full transparency</span>
+        </div>
+      </div>
+    </div>
+
+    
+    <footer class="mt-16 text-center text-slate-500 text-sm border-t border-slate-800 pt-8">
+      <p>Carbon-X — A Decentralized Carbon Credit Marketplace & Industrial Emission Tracking Ecosystem</p>
+      <p class="mt-2">© 2025 | Carbon_X LTD</p>
+    </footer>
+  </main>
+</body>
+</html>

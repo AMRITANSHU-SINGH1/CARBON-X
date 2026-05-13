@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2><span style="color: var(--primary-color)">Audit</span> Ledger</h2>
+    <p class="text-secondary" style="text-align: center; margin-bottom: 2rem;">
+        {% if role == 'company' %}
+            Your complete purchase history — every credit offset is recorded on-chain.
+        {% else %}
+            Your complete sales history — every credit sale is permanently auditable.
+        {% endif %}
+    </p>
+
+    <a href="{{ url_for('dashboard.index') }}" class="btn" style="max-width: 180px; margin-bottom: 2rem; font-size: 0.9em; padding: 0.6rem 1rem;">← Back to Dashboard</a>
+
+    {% if transactions %}
+    <div style="overflow-x: auto; border-radius: 8px; border: 1px solid var(--surface-border);">
+        <table style="width: 100%; border-collapse: collapse; min-width: 900px;">
+            <thead>
+                <tr style="background: rgba(16, 185, 129, 0.08); text-align: left;">
+                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Date</th>
+                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Txn ID</th>
+                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Credits</th>
+                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Credit Tier</th>
+                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Total Price (₹)</th>
+                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Seller Old Bal</th>
+                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Seller New Bal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for txn in transactions %}
+                <tr style="border-bottom: 1px solid var(--surface-border); transition: background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.04)'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 0.85rem 1rem; font-size: 0.9em;">
+                        {{ txn.timestamp.strftime('%Y-%m-%d %H:%M') if txn.timestamp else 'N/A' }}
+                    </td>
+                    <td style="padding: 0.85rem 1rem;">
+                        <span style="background: var(--surface-border); padding: 0.2rem 0.6rem; border-radius: 4px; font-family: monospace; font-size: 0.85em;">
+                            CX-{{ '%05d' | format(txn.id | default(0)) }}
+                        </span>
+                    </td>
+                    <td style="padding: 0.85rem 1rem; font-weight: 600; color: var(--primary-color);">
+                        {{ "{:,.2f}".format(txn.amount_purchased | default(0)) }}
+                    </td>
+                    <td style="padding: 0.85rem 1rem;">
+                        {% set tier = txn.credit_tier | default('Standard') %}
+                        {% set tier_bg = 'linear-gradient(135deg, #FFD700, #DAA520)' %}
+                        {% set tier_color = '#000' %}
+                        {% if 'Tier 2' in tier %}
+                            {% set tier_bg = 'linear-gradient(135deg, #C0C0C0, #A9A9A9)' %}
+                        {% elif 'Tier 3' in tier %}
+                            {% set tier_bg = 'linear-gradient(135deg, #CD7F32, #8B4513)' %}
+                            {% set tier_color = '#fff' %}
+                        {% endif %}
+                        <span style="background: {{ tier_bg }}; color: {{ tier_color }}; padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.8em; font-weight: 600; white-space: nowrap;">{{ tier }}</span>
+                    </td>
+                    <td style="padding: 0.85rem 1rem; font-weight: 600;">
+                        ₹ {{ "{:,.2f}".format(txn.total_price | default(0)) }}
+                    </td>
+                    <td style="padding: 0.85rem 1rem; font-family: monospace; font-size: 0.9em; color: var(--text-secondary);">
+                        {{ "{:,.2f}".format(txn.seller_old_credit_balance | default(0)) }}
+                    </td>
+                    <td style="padding: 0.85rem 1rem; font-family: monospace; font-size: 0.9em;">
+                        <span style="color: var(--primary-color);">{{ "{:,.2f}".format(txn.seller_new_credit_balance | default(0)) }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.05); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.15); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <span style="font-size: 0.9em; color: var(--text-secondary);">Total Transactions: <strong style="color: var(--text-primary);">{{ transactions | length }}</strong></span>
+        <span style="font-size: 0.75em; color: var(--text-secondary); font-style: italic;">
+            Snapshot Audit — seller balances recorded at transaction time for integrity verification.
+        </span>
+    </div>
+
+    {% else %}
+    <div class="alert alert-info" style="margin-top: 2rem;">
+        <h3 style="margin-bottom: 0.5rem;">No Transactions Yet</h3>
+        <p style="margin: 0;">
+            {% if role == 'company' %}
+                Visit the <a href="{{ url_for('marketplace.index') }}" style="color: inherit; text-decoration: underline; font-weight: 600;">Marketplace</a> to purchase your first carbon credits.
+            {% else %}
+                Once a company purchases your carbon credits, transactions will appear here.
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

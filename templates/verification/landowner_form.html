@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>{% if is_resubmission %}Resubmit{% else %}Green Cover{% endif %} Verification</h2>
+    <p class="text-center mb-4 text-secondary">Please submit your green cover and satellite coordinates for validation.</p>
+    
+    {% if is_resubmission %}
+    <div class="alert mt-4" style="border-left: 4px solid #ef4444; background: rgba(239,68,68,0.08); padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <strong style="color: #ef4444;">Your previous submission was rejected.</strong>
+        <p style="margin-top: 0.4rem; font-size: 0.9em; color: var(--text-secondary);">Please review and correct your details below, then resubmit. Your previous data has been pre-filled for reference.</p>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        Status: <span class="status-badge status-{{ current_user.landowner_profile.verification_status }}">{{ current_user.landowner_profile.verification_status }}</span>
+    </div>
+    {% endif %}
+
+    {% if current_user.landowner_profile.verification_status in ('pending', 'rejected') %}
+    <form method="POST" action="{{ url_for('verification.landowner_form') }}">
+        <div class="form-group">
+            <label for="green_cover_details">Green Cover Details &amp; Coordinates</label>
+            <textarea id="green_cover_details" name="green_cover_details" rows="5" required
+                placeholder="Provide hectares of forest, location coordinates, tree species...">{{ current_user.landowner_profile.green_cover_details or '' }}</textarea>
+        </div>
+        <button type="submit" class="btn mt-4">
+            {% if is_resubmission %}Resubmit for Verification{% else %}Submit for Verification{% endif %}
+        </button>
+    </form>
+    {% else %}
+    <div class="text-center mt-4">
+        <p>Your verification is currently under review or has been processed.</p>
+        <a href="{{ url_for('dashboard.index') }}" class="btn mt-4">Go to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2><span style="color: var(--primary-color)">Subordinate</span> Dashboard</h2>
+    <p class="text-secondary">Ecosystem delegate interface.</p>
+    
+    <div class="card-grid mt-4">
+        <div class="card">
+            <h3>Queue assigned to you</h3>
+            <p class="text-secondary mt-4">Perform site verification and pre-checks.</p>
+            <a href="{{ url_for('dashboard.tasks') }}" class="btn mt-4" style="background: var(--surface-border); display: inline-block; text-align: center;">View Queue</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

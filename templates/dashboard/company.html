@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2><span style="color: var(--primary-color)">Company</span> Dashboard</h2>
+    <p class="text-secondary">Welcome, {{ profile.company_name }} ({{ profile.registration_number }})</p>
+
+    {% if profile.verification_status == 'approved' %}
+
+    {# ── Carbon Neutral Badge ─────────────────────────────────────── #}
+    {% if is_carbon_neutral %}
+    <div style="margin-top: 1.5rem; padding: 1.5rem 2rem; border-radius: 12px; background: linear-gradient(135deg, rgba(218,165,32,0.12) 0%, rgba(255,215,0,0.06) 100%); border: 2px solid #DAA520; text-align: center; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,215,0,0.15), transparent 70%); border-radius: 50%;"></div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏆</div>
+        <h3 style="color: #FFD700; font-size: 1.3rem; margin-bottom: 0.5rem; letter-spacing: 0.05em;">CERTIFIED CARBON NEUTRAL</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9em; margin-bottom: 1rem;">Your company has achieved Net-Zero status by fully offsetting all reported emissions.</p>
+        <a href="{{ url_for('dashboard.view_certificate') }}" class="btn" style="max-width: 220px; margin: 0 auto; background: linear-gradient(135deg, #FFD700, #DAA520); color: #000; font-weight: 700;">View Certificate</a>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-success mt-4">
+        Your emission profile is verified! You can now operate on the complete marketplace.
+    </div>
+
+    {# ── Impact Analytics ─────────────────────────────────────────── #}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px; padding: 1.5rem;">
+            <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Total Carbon Offset</p>
+            <h3 style="font-size: 2rem; margin: 0; color: var(--primary-color);">{{ "{:,.2f}".format(total_carbon_offset | default(0)) }} <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-secondary);">tCO₂e</span></h3>
+        </div>
+        <div style="background: var(--surface-border); border-radius: 8px; padding: 1.5rem;">
+            <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Remaining Carbon Debt</p>
+            {% set req_credits = (report.Required_credits if report.Required_credits is not none else 0) if report else 0 %}
+            {% if req_credits > 0 %}
+                <h3 style="font-size: 2rem; margin: 0; color: #ef4444;">{{ "{:,.2f}".format(req_credits) }} <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-secondary);">tCO₂e</span></h3>
+            {% else %}
+                <h3 style="font-size: 1.8rem; margin: 0; color: var(--primary-color);">🎉 Fully Offset</h3>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if report %}
+    <div class="card mt-4 mb-4" style="border: 1px solid var(--primary-color);">
+        <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Verified Emission Status</h3>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+            <div style="background: var(--surface-border); padding: 1rem; border-radius: 8px;">
+                <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.9em;">Total Carbon Footprint</p>
+                <h4 style="font-size: 1.5rem; margin: 0;">{{ "{:,.4f}".format(report.total_emission | default(0)) }} <span
+                        style="font-size: 0.9rem; font-weight: normal; color: var(--text-secondary);">Metric Tons
+                        CO2e</span></h4>
+            </div>
+            <div style="background: var(--surface-border); padding: 1rem; border-radius: 8px;">
+                <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.9em;">Required Offset Credits</p>
+                <h4 style="font-size: 1.5rem; margin: 0;">{{ "{:,.4f}".format(report.total_required_credits | default(0)) }}</h4>
+            </div>
+        </div>
+
+        <h4 style="margin-bottom: 0.75rem;">Detailed Breakdown</h4>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--surface-border); text-align: left;">
+                    <th style="padding: 0.75rem; color: var(--text-secondary); font-weight: 500;">Activity Source</th>
+                    <th style="padding: 0.75rem; color: var(--text-secondary); font-weight: 500;">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--surface-border);">
+                    <td style="padding: 0.75rem;">Diesel</td>
+                    <td style="padding: 0.75rem;">{{ activity_data.get('diesel_liters', 0) }} Liters</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--surface-border);">
+                    <td style="padding: 0.75rem;">Natural Gas</td>
+                    <td style="padding: 0.75rem;">{{ activity_data.get('gas_cubic_meters', 0) }} Cubic Meters</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--surface-border);">
+                    <td style="padding: 0.75rem;">Coal</td>
+                    <td style="padding: 0.75rem;">{{ activity_data.get('coal_metric_tons', 0) }} Metric Tons</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--surface-border);">
+                    <td style="padding: 0.75rem;">Electricity</td>
+                    <td style="padding: 0.75rem;">{{ activity_data.get('electricity_kwh', 0) }} kWh</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div
+            style="font-size: 0.85em; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--surface-border); padding-top: 1rem;">
+            <span><strong>Audited by Subordinate ID:</strong> {{ report.subordinate_id }}</span>
+            <span><strong>Reported Date:</strong> {{ report.reported_date.strftime('%Y-%m-%d %H:%M') if
+                report.reported_date else 'N/A' }}</span>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning mt-4 mb-4">
+        Verification Pending: No completed emission report found for your company.
+    </div>
+    {% endif %}
+
+    <div class="card-grid">
+        <div class="card">
+            <h3>Purchase Credits</h3>
+            <p class="text-secondary mt-4">Explore the marketplace to offset your emissions.</p>
+            <a href="{{ url_for('marketplace.index') }}" class="btn mt-4" style="background: var(--surface-border)">Open Market</a>
+        </div>
+        <div class="card">
+            <h3>Transaction History</h3>
+            <p class="text-secondary mt-4">View your complete audit ledger of credit purchases.</p>
+            <a href="{{ url_for('dashboard.history') }}" class="btn mt-4" style="background: var(--surface-border)">View History</a>
+        </div>
+    </div>
+
+    {% elif profile.verification_status == 'rejected' %}
+    {% set latest_task = current_user.company_verification_tasks | sort(attribute='completed_at', reverse=True) | first
+    if current_user.company_verification_tasks else none %}
+    <div class="alert mt-4"
+        style="border-left: 4px solid #ef4444; background: rgba(239,68,68,0.08); padding: 1.5rem; border-radius: 8px;">
+        <h3 style="color: #ef4444; margin-bottom: 0.75rem;">⚠ Verification Rejected</h3>
+        <p>Your verification request has been rejected. Please review the reason below and resubmit after making
+            corrections.</p>
+        {% if latest_task and latest_task.rejection_reason %}
+        <div
+            style="margin-top: 1rem; padding: 1rem; background: rgba(239,68,68,0.12); border-radius: 6px; border: 1px solid rgba(239,68,68,0.3);">
+            <p style="font-size: 0.85em; color: var(--text-secondary); margin-bottom: 0.3rem;">Rejection Reason{% if
+                latest_task.rejected_by %} (by {{ latest_task.rejected_by }}){% endif %}:</p>
+            <p style="color: #ef4444; font-weight: 500;">{{ latest_task.rejection_reason }}</p>
+        </div>
+        {% endif %}
+        <a href="{{ url_for('verification.company_form') }}" class="btn mt-4"
+            style="max-width: 220px; background: #ef4444;">Resubmit Details</a>
+    </div>
+
+    {% else %}
+    <div class="alert alert-warning mt-4 text-center">
+        <h3>Verification Status: <span class="status-badge status-{{ profile.verification_status }}">{{
+                profile.verification_status }}</span></h3>
+        <p class="mt-4">Your dashboard features are locked until an administrator reviews and approves your emission
+            data submission.</p>
+        {% if profile.verification_status == 'pending' %}
+        <a href="{{ url_for('verification.company_form') }}" class="btn mt-4" style="max-width: 200px">Complete Form</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

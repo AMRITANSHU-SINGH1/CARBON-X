@@ -30,7 +30,7 @@
         </div>
         <div style="background: var(--surface-border); border-radius: 8px; padding: 1.5rem;">
             <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Remaining Carbon Debt</p>
-            {% set req_credits = report.Required_credits | default(0) if report else 0 %}
+            {% set req_credits = (report.Required_credits if report.Required_credits is not none else 0) if report else 0 %}
             {% if req_credits > 0 %}
                 <h3 style="font-size: 2rem; margin: 0; color: #ef4444;">{{ "{:,.2f}".format(req_credits) }} <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-secondary);">tCO₂e</span></h3>
             {% else %}

@@ -344,6 +344,7 @@ def process_task(task_id):
                 subordinate_id=current_user.id,
                 total_emission=total_emission,
                 total_required_credits=total_required_credits,
+                Required_credits=total_required_credits,
                 reported_date=reported_date,
                 raw_activity_data=raw_activity_data,
                 status='Submitted'
@@ -464,6 +465,7 @@ def process_task(task_id):
                 raw_data=raw_data_json,
                 gross_credits=gross,
                 total_credits_calculated=net,
+                left_carbon_credits=net,
                 price_per_credit=final_price,
                 market_tier=market_tier,
                 rating=rating,

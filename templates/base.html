@@ -8,16 +8,12 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="/" class="nav-brand">CARBON-X</a>
+        <a href="{{ url_for('index') }}" class="nav-brand">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 40px !important; width: auto !important; display: block;" alt="Carbon-X Logo">
+        </a>
         <div class="nav-links">
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('dashboard.index') }}">Dashboard</a>
-                {% if current_user.role in ['company', 'landowner'] %}
-                <a href="{{ url_for('dashboard.history') }}">History</a>
-                {% endif %}
-                {% if current_user.role == 'company' %}
-                <a href="{{ url_for('marketplace.index') }}">Marketplace</a>
-                {% endif %}
                 <a href="{{ url_for('auth.logout') }}">Logout ({{ current_user.username }})</a>
             {% else %}
                 <a href="{{ url_for('auth.login') }}">Login</a>

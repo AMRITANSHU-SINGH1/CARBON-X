@@ -1,48 +1,102 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="auth-container">
-    <h2>Company Onboarding</h2>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var nav = document.querySelector('nav');
+    if (nav) {
+      nav.className = "bg-white/10 backdrop-blur-md border-b border-white/10 sticky top-0 z-50";
+      var parentDiv = document.createElement('div');
+      parentDiv.className = "flex justify-between items-center h-16 w-full px-8";
+      var logoContainer = document.createElement('div');
+      logoContainer.className = "flex items-center";
+      var logoLink = nav.querySelector('.nav-brand');
+      if (logoLink) logoContainer.appendChild(logoLink.cloneNode(true));
+      var linksContainer = document.createElement('div');
+      linksContainer.className = "flex space-x-4 items-center";
+      var navLinks = nav.querySelector('.nav-links');
+      if (navLinks) {
+        Array.from(navLinks.children).forEach(function(c) { linksContainer.appendChild(c.cloneNode(true)); });
+      }
+      nav.innerHTML = '';
+      parentDiv.appendChild(logoContainer);
+      parentDiv.appendChild(linksContainer);
+      nav.appendChild(parentDiv);
+    }
+  });
+</script>
+<style>
+body {
+  background-image: linear-gradient(rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.5)), 
+                    url("/static/images/Gemini_Generated_Image_h72mp4h72mp4h72m.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: #0f172a;
+}
+.auth-container p, .auth-container label {
+  color: #f1f5f9 !important;
+}
+.auth-container input, .auth-container select, .auth-container textarea {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+.auth-container input:focus, .auth-container select:focus, .auth-container textarea:focus {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+.auth-container input::placeholder, .auth-container textarea::placeholder {
+  color: #cbd5e1 !important;
+}
+.auth-container select option {
+  background-color: #1e293b !important;
+  color: white !important;
+}
+</style>
+<div class="auth-container bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl p-10 shadow-[0_8px_32px_0_rgba(255,255,255,0.1)]">
+    <h2 class="text-white font-semibold">Company Onboarding</h2>
     <p class="text-center mb-4 text-secondary">Register to track and offset carbon emissions.</p>
     
     <form method="POST" action="{{ url_for('auth.register_company') }}">
         <div class="form-group">
             <label for="company_name">Company Name</label>
-            <input type="text" id="company_name" name="company_name" required>
+            <input class="bg-white/10 border border-white/20 text-white placeholder-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all" type="text" id="company_name" name="company_name" required>
         </div>
         <div class="form-group">
             <label for="registration_number">Company Registration / EIN</label>
-            <input type="text" id="registration_number" name="registration_number" required>
+            <input class="bg-white/10 border border-white/20 text-white placeholder-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all" type="text" id="registration_number" name="registration_number" required>
         </div>
         <div class="form-group">
             <label for="username">Admin Username</label>
-            <input type="text" id="username" name="username" required>
+            <input class="bg-white/10 border border-white/20 text-white placeholder-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all" type="text" id="username" name="username" required>
         </div>
         <div class="form-group">
             <label for="email">Admin Email</label>
-            <input type="email" id="email" name="email" required>
+            <input class="bg-white/10 border border-white/20 text-white placeholder-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all" type="email" id="email" name="email" required>
         </div>
         <div class="form-group" style="display: flex; gap: 1rem;">
             <div style="flex: 1;">
                 <label for="state-select">State</label>
-                <select id="state-select" required>
+                <select class="bg-white/10 border border-white/20 text-white placeholder-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all" id="state-select" required>
                     <option value="" disabled selected>-- Select State --</option>
                 </select>
             </div>
             <div style="flex: 1;">
                 <label for="district-select">District</label>
-                <select id="district-select" name="district" required>
+                <select class="bg-white/10 border border-white/20 text-white placeholder-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all" id="district-select" name="district" required>
                     <option value="" disabled selected>-- Select District --</option>
                 </select>
             </div>
         </div>
         <div class="form-group">
             <label for="address">Full Address</label>
-            <textarea id="address" name="address" rows="3" required style="resize: vertical;"></textarea>
+            <textarea class="bg-white/10 border border-white/20 text-white placeholder-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all" id="address" name="address" rows="3" required style="resize: vertical;"></textarea>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <input class="bg-white/10 border border-white/20 text-white placeholder-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:bg-white/20 transition-all" type="password" id="password" name="password" required>
         </div>
         <button type="submit" class="btn mt-4">Create Account & Proceed</button>
     </form>

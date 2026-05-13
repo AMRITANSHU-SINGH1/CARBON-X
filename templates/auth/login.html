@@ -1,7 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="auth-container">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var nav = document.querySelector('nav');
+    if (nav) {
+      nav.className = "bg-white/10 backdrop-blur-md border-b border-white/10 sticky top-0 z-50";
+      var parentDiv = document.createElement('div');
+      parentDiv.className = "flex justify-between items-center h-16 w-full px-8";
+      var logoContainer = document.createElement('div');
+      logoContainer.className = "flex items-center";
+      var logoLink = nav.querySelector('.nav-brand');
+      if (logoLink) logoContainer.appendChild(logoLink.cloneNode(true));
+      var linksContainer = document.createElement('div');
+      linksContainer.className = "flex space-x-4 items-center";
+      var navLinks = nav.querySelector('.nav-links');
+      if (navLinks) {
+        Array.from(navLinks.children).forEach(function(c) { linksContainer.appendChild(c.cloneNode(true)); });
+      }
+      nav.innerHTML = '';
+      parentDiv.appendChild(logoContainer);
+      parentDiv.appendChild(linksContainer);
+      nav.appendChild(parentDiv);
+    }
+  });
+</script>
+<style>
+body {
+  background-image: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), 
+                    url("/static/images/Gemini_Generated_Image_13gg9x13gg9x13gg.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: #0f172a;
+}
+</style>
+<div class="auth-container bg-slate-900/60 backdrop-blur-md">
     <h2>Welcome Back to Carbon-X</h2>
     <p class="text-center mb-4 text-secondary">Login to your centralized tracking dashboard.</p>
     

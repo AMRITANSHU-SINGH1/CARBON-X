@@ -2,3 +2,6 @@
 venv/
 __pycache__/
 *.pyc
+/documentation/Phase L1.md
+/documentation/Phase L2.md
+/documentation/Phase L3.md

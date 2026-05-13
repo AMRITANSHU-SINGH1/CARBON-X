@@ -21,10 +21,12 @@ def create_app(config_class=Config):
     from routes.auth import auth_bp
     from routes.dashboard import dashboard_bp
     from routes.verification import verification_bp
+    from routes.marketplace import marketplace_bp
 
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
     app.register_blueprint(verification_bp, url_prefix='/verification')
+    app.register_blueprint(marketplace_bp, url_prefix='/marketplace')
 
     @app.route('/')
     def index():

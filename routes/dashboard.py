@@ -51,8 +51,12 @@ def index():
         
         latest_credit = None
         inventory_data = []
+        total_value = 0.0
         if latest_assessment:
             latest_credit = CarbonCredit.query.filter_by(carbon_assessment_id=latest_assessment.id).first()
+            if latest_credit and latest_credit.total_credits_calculated and latest_credit.price_per_credit:
+                total_value = latest_credit.total_credits_calculated * latest_credit.price_per_credit
+            
             if latest_assessment.raw_data:
                 try:
                     inventory_data = json.loads(latest_assessment.raw_data)
@@ -63,7 +67,8 @@ def index():
                                profile=current_user.landowner_profile,
                                assessment=latest_assessment,
                                credit=latest_credit,
-                               inventory_data=inventory_data)
+                               inventory_data=inventory_data,
+                               total_value=total_value)
     else:
         return "Invalid role", 400
 

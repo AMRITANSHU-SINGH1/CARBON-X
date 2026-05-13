@@ -70,6 +70,91 @@
         Assessment Pending: No completed assessment data found for your profile.
     </div>
     {% endif %}
+    {% if assessment and credit and credit.quality_score %}
+    <!-- Market Valuation & Credit Quality Section -->
+    <div class="card mt-4 mb-4" style="border: 1px solid var(--primary-color);">
+        <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Market Valuation & Credit Quality</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Financial Summary -->
+            <div style="background: rgba(16, 185, 129, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.05em;">Total Portfolio Value</p>
+                <h4 style="font-size: 2rem; margin: 0; color: var(--primary-color);">₹ {{ "{:,.2f}".format(total_value) }}</h4>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(16, 185, 129, 0.2); display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.9em; color: var(--text-secondary);">Price Per Credit:</span>
+                    <span style="font-weight: 600;">₹ {{ "{:,.2f}".format(credit.price_per_credit) }} / tCO2e</span>
+                </div>
+            </div>
+            
+            <!-- Tier Badge & Rating -->
+            <div style="background: var(--surface-border); padding: 1.5rem; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.05em;">Official Rating</p>
+                <h4 style="font-size: 2.5rem; margin: 0; line-height: 1;">{{ credit.rating }}</h4>
+                
+                {% set tier_bg = 'linear-gradient(135deg, #FFD700, #DAA520)' %}
+                {% set tier_color = '#000' %}
+                {% if credit.market_tier and 'Tier 2' in credit.market_tier %}
+                    {% set tier_bg = 'linear-gradient(135deg, #C0C0C0, #A9A9A9)' %}
+                {% elif credit.market_tier and 'Tier 3' in credit.market_tier %}
+                    {% set tier_bg = 'linear-gradient(135deg, #CD7F32, #8B4513)' %}
+                    {% set tier_color = '#fff' %}
+                {% endif %}
+                
+                <div style="margin-top: 1rem; padding: 0.5rem 1rem; border-radius: 20px; background: {{ tier_bg }}; color: {{ tier_color }}; font-weight: 600; font-size: 0.9em; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    {{ credit.market_tier }}
+                </div>
+            </div>
+        </div>
+        
+        <h4 style="margin-bottom: 1rem;">Integrity Progress Bars <span style="float: right; font-size: 0.9rem; color: var(--text-secondary);">Quality Score: <strong>{{ "%.1f"|format(assessment.final_quality_score) }} / 5.0</strong></span></h4>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <!-- Additionality -->
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.85em;">
+                    <span style="color: var(--text-secondary);">Additionality</span>
+                    <span style="font-weight: 600;">{{ assessment.additionality_score }} / 5</span>
+                </div>
+                <div style="width: 100%; background: var(--background-color); border-radius: 4px; height: 8px; overflow: hidden; border: 1px solid var(--surface-border);">
+                    <div style="width: {{ (assessment.additionality_score / 5.0) * 100 }}%; background: var(--primary-color); height: 100%; border-radius: 4px;"></div>
+                </div>
+            </div>
+            
+            <!-- Permanence -->
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.85em;">
+                    <span style="color: var(--text-secondary);">Permanence</span>
+                    <span style="font-weight: 600;">{{ assessment.permanence_score }} / 5</span>
+                </div>
+                <div style="width: 100%; background: var(--background-color); border-radius: 4px; height: 8px; overflow: hidden; border: 1px solid var(--surface-border);">
+                    <div style="width: {{ (assessment.permanence_score / 5.0) * 100 }}%; background: var(--primary-color); height: 100%; border-radius: 4px;"></div>
+                </div>
+            </div>
+            
+            <!-- Biodiversity -->
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.85em;">
+                    <span style="color: var(--text-secondary);">Biodiversity</span>
+                    <span style="font-weight: 600;">{{ assessment.biodiversity_score }} / 5</span>
+                </div>
+                <div style="width: 100%; background: var(--background-color); border-radius: 4px; height: 8px; overflow: hidden; border: 1px solid var(--surface-border);">
+                    <div style="width: {{ (assessment.biodiversity_score / 5.0) * 100 }}%; background: var(--primary-color); height: 100%; border-radius: 4px;"></div>
+                </div>
+            </div>
+            
+            <!-- Precision -->
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.85em;">
+                    <span style="color: var(--text-secondary);">Data Precision</span>
+                    <span style="font-weight: 600;">{{ assessment.precision_score }} / 5</span>
+                </div>
+                <div style="width: 100%; background: var(--background-color); border-radius: 4px; height: 8px; overflow: hidden; border: 1px solid var(--surface-border);">
+                    <div style="width: {{ (assessment.precision_score / 5.0) * 100 }}%; background: var(--primary-color); height: 100%; border-radius: 4px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     
     <div class="card-grid">
         <div class="card">

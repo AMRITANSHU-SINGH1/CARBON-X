@@ -362,12 +362,42 @@ def process_task(task_id):
                 total_area = float(total_area)
                 fertilizer_kg = float(fertilizer_kg)
                 diesel_l = float(diesel_l)
+                
+                # Extract Integrity Audit Metrics
+                additionality = int(request.form.get('additionality', 0))
+                permanence = int(request.form.get('permanence', 0))
+                biodiversity = int(request.form.get('biodiversity', 0))
+                precision = int(request.form.get('precision', 0))
+                
+                if not (1 <= additionality <= 5 and 1 <= permanence <= 5 and 1 <= biodiversity <= 5 and 1 <= precision <= 5):
+                    flash('Integrity audit metrics must be between 1 and 5.', 'danger')
+                    return redirect(url_for('dashboard.process_task', task_id=task.id))
+                    
             except ValueError:
-                flash('Invalid value in operational data.', 'danger')
+                flash('Invalid value in operational or audit data.', 'danger')
                 return redirect(url_for('dashboard.process_task', task_id=task.id))
 
             gross, net = _calc_net_credits(species_rows, fertilizer_kg, diesel_l)
             raw_data_json = json.dumps(species_rows)
+
+            # Calculate Quality Score & Pricing
+            quality_score = (additionality + permanence + biodiversity + precision) / 4.0
+            
+            if quality_score >= 4.5:
+                rating = 'AAA'
+                market_tier = 'Tier 1 - Premium'
+            elif quality_score >= 3.5:
+                rating = 'AA'
+                market_tier = 'Tier 1 - High Quality'
+            elif quality_score >= 2.5:
+                rating = 'A'
+                market_tier = 'Tier 2 - Standard'
+            else:
+                rating = 'BBB'
+                market_tier = 'Tier 3 - Budget'
+                
+            base_price = 2500.00
+            final_price = base_price * (quality_score / 5.0)
 
             assessment = CarbonAssessment(
                 task_id=task.id,
@@ -380,6 +410,11 @@ def process_task(task_id):
                 diesel_liters=diesel_l,
                 gross_credits=gross,
                 total_credits_calculated=net,
+                additionality_score=additionality,
+                permanence_score=permanence,
+                biodiversity_score=biodiversity,
+                precision_score=precision,
+                final_quality_score=quality_score,
                 status='Completed'
             )
             db.session.add(assessment)
@@ -395,6 +430,10 @@ def process_task(task_id):
                 raw_data=raw_data_json,
                 gross_credits=gross,
                 total_credits_calculated=net,
+                price_per_credit=final_price,
+                market_tier=market_tier,
+                rating=rating,
+                quality_score=quality_score,
                 status='Active'
             )
             db.session.add(credit)

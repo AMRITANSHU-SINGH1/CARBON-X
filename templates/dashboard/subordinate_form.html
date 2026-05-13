@@ -73,6 +73,55 @@
             </div>
         </div>
 
+        <!-- Credit Integrity Audit -->
+        <h3 style="margin-top: 2rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--surface-border);">4. Credit Integrity Audit</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+                <label for="additionality" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Additionality (1-5) <span style="color:#ef4444">*</span><br><small style="font-weight: normal;">Does this project provide carbon benefits that wouldn't happen otherwise? (5 = High, 1 = Low)</small></label>
+                <select id="additionality" name="additionality" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+                    <option value="" disabled selected>Select score...</option>
+                    <option value="5">5 - High Additionality</option>
+                    <option value="4">4 - Moderately High</option>
+                    <option value="3">3 - Moderate</option>
+                    <option value="2">2 - Moderately Low</option>
+                    <option value="1">1 - Low Additionality</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="permanence" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Permanence (1-5) <span style="color:#ef4444">*</span><br><small style="font-weight: normal;">Is there a low risk of the carbon being released? (5 = Very Low Risk, 1 = High Risk)</small></label>
+                <select id="permanence" name="permanence" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+                    <option value="" disabled selected>Select score...</option>
+                    <option value="5">5 - Very Low Risk</option>
+                    <option value="4">4 - Low Risk</option>
+                    <option value="3">3 - Moderate Risk</option>
+                    <option value="2">2 - High Risk</option>
+                    <option value="1">1 - Very High Risk</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="biodiversity" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Biodiversity (1-5) <span style="color:#ef4444">*</span><br><small style="font-weight: normal;">Does the land support diverse native species? (5 = High Diversity, 1 = Monoculture)</small></label>
+                <select id="biodiversity" name="biodiversity" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+                    <option value="" disabled selected>Select score...</option>
+                    <option value="5">5 - High Diversity</option>
+                    <option value="4">4 - Good Diversity</option>
+                    <option value="3">3 - Moderate Diversity</option>
+                    <option value="2">2 - Low Diversity</option>
+                    <option value="1">1 - Monoculture</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="precision" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Precision (1-5) <span style="color:#ef4444">*</span><br><small style="font-weight: normal;">How accurate were the measurements? (5 = Scientific Tools, 1 = Rough Estimate)</small></label>
+                <select id="precision" name="precision" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+                    <option value="" disabled selected>Select score...</option>
+                    <option value="5">5 - Scientific Tools Used</option>
+                    <option value="4">4 - Standard Tools Used</option>
+                    <option value="3">3 - Moderate Accuracy</option>
+                    <option value="2">2 - Low Accuracy</option>
+                    <option value="1">1 - Rough Estimate</option>
+                </select>
+            </div>
+        </div>
+
         <!-- Live Calculation Preview -->
         <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid var(--primary-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
             <h4 style="margin-top: 0; color: var(--primary-color);">Live Calculation Preview</h4>

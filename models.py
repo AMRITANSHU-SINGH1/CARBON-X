@@ -104,6 +104,13 @@ class CarbonAssessment(db.Model):
     nitrogen_fertilizer_kg = db.Column(db.Float, nullable=False, default=0.0)
     diesel_liters = db.Column(db.Float, nullable=False, default=0.0)
 
+    # Integrity Audit Metrics
+    additionality_score = db.Column(db.Integer, nullable=True)
+    permanence_score = db.Column(db.Integer, nullable=True)
+    biodiversity_score = db.Column(db.Integer, nullable=True)
+    precision_score = db.Column(db.Integer, nullable=True)
+    final_quality_score = db.Column(db.Float, nullable=True)
+
     # Status: 'Pending', 'Verified', 'Rejected'
     status = db.Column(db.String(20), default='Pending', nullable=False)
 
@@ -130,6 +137,12 @@ class CarbonCredit(db.Model):
     
     total_credits_calculated = db.Column(db.Float, nullable=False, default=0.0)
     gross_credits = db.Column(db.Float, nullable=True)
+
+    # Pricing & Market Attributes
+    price_per_credit = db.Column(db.Float, nullable=True)
+    market_tier = db.Column(db.String(50), nullable=True)
+    rating = db.Column(db.String(10), nullable=True)
+    quality_score = db.Column(db.Float, nullable=True)
 
     status = db.Column(db.String(20), default='Active', nullable=False)  # 'Active', 'Sold', 'Deactivated'
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

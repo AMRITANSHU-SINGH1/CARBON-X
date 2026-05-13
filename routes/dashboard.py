@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from extensions import db
-from models import User, SubordinateProfile, VerificationTask, CarbonAssessment, CarbonCredit, EmissionReport
+from models import User, SubordinateProfile, VerificationTask, CarbonAssessment, CarbonCredit, EmissionReport, CarbonTransaction
 from datetime import datetime
 import os
 import json
@@ -537,3 +537,99 @@ def admin_reject_task(task_id):
     db.session.commit()
     flash('Task has been rejected. The subordinate and client have been notified.', 'success')
     return redirect(url_for('dashboard.allocated_tasks'))
+
+@dashboard_bp.route('/execute-purchase/<int:credit_id>', methods=['POST'])
+@login_required
+def execute_purchase(credit_id):
+    if current_user.role != 'company':
+        return jsonify({'error': 'Unauthorized. Only companies can purchase credits.'}), 403
+
+    quantity_str = request.form.get('quantity') or request.json.get('quantity')
+    if not quantity_str:
+        return jsonify({'error': 'Quantity is required.'}), 400
+
+    try:
+        quantity = float(quantity_str)
+        if quantity <= 0:
+            return jsonify({'error': 'Quantity must be greater than zero.'}), 400
+    except ValueError:
+        return jsonify({'error': 'Invalid quantity format.'}), 400
+
+    try:
+        # Step A: Fetch & Validate
+        credit = CarbonCredit.query.get(credit_id)
+        if not credit:
+            return jsonify({'error': 'Carbon credit not found.'}), 404
+
+        seller = credit.landowner.landowner_profile
+        buyer = current_user.company_profile
+        
+        # Get latest emission report for the buyer
+        report = EmissionReport.query.filter_by(
+            company_id=current_user.id,
+            status='Submitted'
+        ).order_by(EmissionReport.reported_date.desc()).first()
+
+        if not report:
+            return jsonify({'error': 'No approved emission report found for your company.'}), 400
+
+        # Check Stock
+        if credit.left_carbon_credits is None or quantity > credit.left_carbon_credits:
+            return jsonify({'error': f'Not enough credits available. Only {credit.left_carbon_credits or 0} left.'}), 400
+
+        # Check Funds
+        total_price = quantity * credit.price_per_credit
+        if buyer.wallet_balance < total_price:
+            return jsonify({'error': f'Insufficient funds. Required: ₹ {total_price:,.2f}, Available: ₹ {buyer.wallet_balance:,.2f}'}), 400
+
+        # Step B: The "Before" Snapshot
+        seller_old_credit_balance = credit.left_carbon_credits
+        buyer_old_wallet_balance = buyer.wallet_balance
+
+        # Step C: Execute Updates
+        # Landowner Update
+        credit.left_carbon_credits -= quantity
+        credit.sold_credits += quantity
+        seller.wallet_balance += total_price
+
+        # Company Update
+        buyer.wallet_balance -= total_price
+        report.credits_owned += quantity
+        
+        if report.Required_credits is None:
+            report.Required_credits = report.total_required_credits
+            
+        report.Required_credits -= quantity
+        if report.Required_credits < 0:
+            report.Required_credits = 0.0
+
+        # Step D: Create Audit Log
+        transaction = CarbonTransaction(
+            buyer_id=buyer.id,
+            seller_id=seller.id,
+            credit_id=credit.id,
+            amount_purchased=quantity,
+            price_per_unit=credit.price_per_credit,
+            total_price=total_price,
+            seller_old_credit_balance=seller_old_credit_balance,
+            seller_new_credit_balance=credit.left_carbon_credits,
+            buyer_old_wallet_balance=buyer_old_wallet_balance,
+            buyer_new_wallet_balance=buyer.wallet_balance,
+            quality_score=credit.quality_score,
+            credit_tier=credit.market_tier,
+            timestamp=datetime.utcnow()
+        )
+        db.session.add(transaction)
+
+        # Commit
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': f'Successfully purchased {quantity} credits for ₹ {total_price:,.2f}.',
+            'new_wallet_balance': buyer.wallet_balance,
+            'new_credits_owned': report.credits_owned
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Transaction failed: {str(e)}'}), 500

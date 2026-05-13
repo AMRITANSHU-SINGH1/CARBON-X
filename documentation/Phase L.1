@@ -1,0 +1,51 @@
+# Antigravity Agent Prompt: Phase 1 - Financial Layer & Audit Foundation
+
+**Objective:** Implement the database infrastructure for the Carbon-X Virtual Wallet and Transaction Audit System. This phase focuses on extending existing models and creating a high-integrity ledger for credit and currency movement.
+
+---
+
+### 1. User/Profile Table Extensions (SQLAlchemy)
+Modify the existing User or Profile models (CompanyProfile and LandownerProfile) to include financial tracking:
+* **Attribute:** `wallet_balance` (Float or Numeric).
+* **Initialization:** Set a default value of `500000.0` for Company users (to facilitate testing) and `0.0` for Landowner users.
+
+### 2. Credit Inventory & Requirement Extensions
+Update the core tracking models to manage live balances:
+
+* **Table `CarbonCredit` (Landowner):**
+    - Add `left_carbon_credits` (Float): This tracks current available stock. Initial value should equal the total credits minted.
+    - Add `sold_credits` (Float): This tracks the historical total of credits traded. Initial value = `0.0`.
+
+* **Table `EmissionReport` (Company):**
+    - Ensure `total_required_credits` (existing) remains.
+    - Add `Required_credits` (Float): The live "carbon debt." Initial value should equal the original total required credits.
+    - Add `credits_owned` (Float): The live count of purchased credits. Initial value = `0.0`.
+
+### 3. New Table: `CarbonTransaction` (The Snapshot Audit Ledger)
+Create a new model to record every trade with a "before and after" snapshot for full transparency:
+
+* **Core Attributes:**
+    - `id` (Primary Key)
+    - `buyer_id` (FK to CompanyProfile)
+    - `seller_id` (FK to LandownerProfile)
+    - `credit_id` (FK to CarbonCredit)
+    - `amount_purchased` (Float)
+    - `price_per_unit` (Float)
+    - `total_price` (Float)
+* **Snapshot Columns (The Audit Trail):**
+    - `seller_old_credit_balance` (Float)
+    - `seller_new_credit_balance` (Float)
+    - `buyer_old_wallet_balance` (Float)
+    - `buyer_new_wallet_balance` (Float)
+* **Metadata:**
+    - `quality_score` (Float)
+    - `credit_tier` (String)
+    - `timestamp` (DateTime, Default=Now)
+
+---
+
+### 4. Implementation Logic for Agent
+1. **Model Analysis:** Review `models.py` to identify the correct class names for Users, CompanyProfiles, and LandownerProfiles.
+2. **Migration Generation:** Generate the SQLAlchemy code to alter the existing tables and create the `CarbonTransaction` table.
+3. **Data Syncing Script:** Create a post-migration logic that iterates through existing `CarbonCredit` and `EmissionReport` records to initialize `left_carbon_credits` and `Required_credits` based on their original calculated values.
+4. **Validation:** Ensure all numeric fields use appropriate precision (e.g., 2 decimal places) for financial accuracy.

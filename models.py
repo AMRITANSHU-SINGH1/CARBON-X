@@ -40,6 +40,7 @@ class CompanyProfile(db.Model):
     emission_data = db.Column(db.Text, nullable=True) # Text or JSON string to store form details
     site_verified = db.Column(db.Boolean, default=False)
     admin_approved = db.Column(db.Boolean, default=False)
+    wallet_balance = db.Column(db.Float, default=500000.0)
 
 class LandownerProfile(db.Model):
     __tablename__ = 'landowner_profiles'
@@ -56,6 +57,7 @@ class LandownerProfile(db.Model):
     green_cover_details = db.Column(db.Text, nullable=True)
     site_verified = db.Column(db.Boolean, default=False)
     admin_approved = db.Column(db.Boolean, default=False)
+    wallet_balance = db.Column(db.Float, default=0.0)
 
 class VerificationTask(db.Model):
     __tablename__ = 'verification_tasks'
@@ -137,6 +139,9 @@ class CarbonCredit(db.Model):
     
     total_credits_calculated = db.Column(db.Float, nullable=False, default=0.0)
     gross_credits = db.Column(db.Float, nullable=True)
+    
+    left_carbon_credits = db.Column(db.Float, nullable=True)
+    sold_credits = db.Column(db.Float, default=0.0)
 
     # Pricing & Market Attributes
     price_per_credit = db.Column(db.Float, nullable=True)
@@ -170,6 +175,9 @@ class EmissionReport(db.Model):
     total_emission = db.Column(db.Float, nullable=False, default=0.0)
     total_required_credits = db.Column(db.Float, nullable=False, default=0.0)
     
+    Required_credits = db.Column(db.Float, nullable=True)
+    credits_owned = db.Column(db.Float, default=0.0)
+    
     reported_date = db.Column(db.DateTime, default=datetime.utcnow)
     raw_activity_data = db.Column(db.Text, nullable=False) # JSON storing the scope 1 & 2 inputs
     status = db.Column(db.String(20), default='Submitted', nullable=False)
@@ -178,3 +186,35 @@ class EmissionReport(db.Model):
     company_user = db.relationship('User', foreign_keys=[company_id], backref='emission_reports')
     task = db.relationship('VerificationTask', backref=db.backref('emission_report', uselist=False))
     subordinate = db.relationship('User', foreign_keys=[subordinate_id], backref='submitted_emission_reports')
+
+
+class CarbonTransaction(db.Model):
+    """The Snapshot Audit Ledger for carbon credit trades."""
+    __tablename__ = 'carbon_transactions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    buyer_id = db.Column(db.Integer, db.ForeignKey('company_profiles.id'), nullable=False)
+    seller_id = db.Column(db.Integer, db.ForeignKey('landowner_profiles.id'), nullable=False)
+    credit_id = db.Column(db.Integer, db.ForeignKey('carbon_credits.id'), nullable=False)
+
+    # Trade details
+    amount_purchased = db.Column(db.Float, nullable=False)
+    price_per_unit = db.Column(db.Float, nullable=False)
+    total_price = db.Column(db.Float, nullable=False)
+
+    # Audit Trail Snapshots
+    seller_old_credit_balance = db.Column(db.Float, nullable=False)
+    seller_new_credit_balance = db.Column(db.Float, nullable=False)
+    buyer_old_wallet_balance = db.Column(db.Float, nullable=False)
+    buyer_new_wallet_balance = db.Column(db.Float, nullable=False)
+
+    # Metadata
+    quality_score = db.Column(db.Float, nullable=True)
+    credit_tier = db.Column(db.String(50), nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationships
+    buyer = db.relationship('CompanyProfile', backref='purchased_transactions')
+    seller = db.relationship('LandownerProfile', backref='sold_transactions')
+    credit = db.relationship('CarbonCredit', backref='transactions')
+

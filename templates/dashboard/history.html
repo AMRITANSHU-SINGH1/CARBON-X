@@ -24,19 +24,19 @@
     <div style="overflow-x: auto; border-radius: 8px; border: 1px solid var(--surface-border);">
         <table style="width: 100%; border-collapse: collapse; min-width: 900px;">
             <thead>
-                <tr style="background: rgba(16, 185, 129, 0.08); text-align: left;">
-                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Date</th>
-                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Txn ID</th>
-                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Credits</th>
-                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Credit Tier</th>
-                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Total Price (₹)</th>
-                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Seller Old Bal</th>
-                    <th style="padding: 1rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Seller New Bal</th>
+                <tr style="background: rgba(6, 95, 70, 0.08); text-align: left;">
+                    <th style="padding: 1rem; color: var(--text-primary); font-weight: 700; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Date</th>
+                    <th style="padding: 1rem; color: var(--text-primary); font-weight: 700; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Txn ID</th>
+                    <th style="padding: 1rem; color: var(--text-primary); font-weight: 700; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Credits</th>
+                    <th style="padding: 1rem; color: var(--text-primary); font-weight: 700; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Credit Tier</th>
+                    <th style="padding: 1rem; color: var(--text-primary); font-weight: 700; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Total Price (₹)</th>
+                    <th style="padding: 1rem; color: var(--text-primary); font-weight: 700; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Seller Old Bal</th>
+                    <th style="padding: 1rem; color: var(--text-primary); font-weight: 700; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;">Seller New Bal</th>
                 </tr>
             </thead>
             <tbody>
                 {% for txn in transactions %}
-                <tr style="border-bottom: 1px solid var(--surface-border); transition: background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.04)'" onmouseout="this.style.background='transparent'">
+                <tr style="border-bottom: 1px solid var(--surface-border); transition: background 0.2s;" onmouseover="this.style.background='rgba(6,95,70,0.05)'" onmouseout="this.style.background='transparent'">
                     <td style="padding: 0.85rem 1rem; font-size: 0.9em;">
                         {{ txn.timestamp.strftime('%Y-%m-%d %H:%M') if txn.timestamp else 'N/A' }}
                     </td>

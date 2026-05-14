@@ -41,37 +41,37 @@
         <!-- Metadata -->
         <h3 style="margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--surface-border);">Metadata</h3>
         <div class="form-group" style="margin-bottom: 2rem;">
-            <label for="reported_date" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Reported Date (Date of Inspection) <span style="color:#ef4444">*</span></label>
-            <input type="date" id="reported_date" name="reported_date" required style="width: 100%; max-width: 300px; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+            <label for="reported_date">Reported Date (Date of Inspection) <span style="color:#ef4444">*</span></label>
+            <input type="date" id="reported_date" name="reported_date" required style="max-width: 300px;">
         </div>
 
         <!-- Scope 1: Direct Emissions -->
         <h3 style="margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--surface-border);">Activity Data (Scope 1 - Direct)</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
             <div class="form-group">
-                <label for="diesel_liters" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Diesel Consumption (Liters)</label>
-                <input type="number" step="0.01" min="0" id="diesel_liters" name="diesel_liters" value="0" style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+                <label for="diesel_liters">Diesel Consumption (Liters)</label>
+                <input type="number" step="0.01" min="0" id="diesel_liters" name="diesel_liters" value="0" oninput="updateLivePreview()">
             </div>
             <div class="form-group">
-                <label for="gas_cubic_meters" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Natural Gas Consumption (Cubic Meters)</label>
-                <input type="number" step="0.01" min="0" id="gas_cubic_meters" name="gas_cubic_meters" value="0" style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+                <label for="gas_cubic_meters">Natural Gas Consumption (Cubic Meters)</label>
+                <input type="number" step="0.01" min="0" id="gas_cubic_meters" name="gas_cubic_meters" value="0" oninput="updateLivePreview()">
             </div>
             <div class="form-group" style="grid-column: 1 / -1;">
-                <label for="coal_metric_tons" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">On-site Coal Usage (Metric Tons)</label>
-                <input type="number" step="0.01" min="0" id="coal_metric_tons" name="coal_metric_tons" value="0" style="width: 100%; max-width: calc(50% - 0.75rem); padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+                <label for="coal_metric_tons">On-site Coal Usage (Metric Tons)</label>
+                <input type="number" step="0.01" min="0" id="coal_metric_tons" name="coal_metric_tons" value="0" style="max-width: calc(50% - 0.75rem);" oninput="updateLivePreview()">
             </div>
         </div>
 
         <!-- Scope 2: Indirect Emissions -->
         <h3 style="margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--surface-border);">Activity Data (Scope 2 - Indirect)</h3>
         <div class="form-group" style="margin-bottom: 2rem;">
-            <label for="electricity_kwh" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Electricity Consumption (kWh)</label>
-            <input type="number" step="0.01" min="0" id="electricity_kwh" name="electricity_kwh" value="0" style="width: 100%; max-width: calc(50% - 0.75rem); padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+            <label for="electricity_kwh">Electricity Consumption (kWh)</label>
+            <input type="number" step="0.01" min="0" id="electricity_kwh" name="electricity_kwh" value="0" style="max-width: calc(50% - 0.75rem);" oninput="updateLivePreview()">
         </div>
 
         <!-- Live Calculation Preview -->
-        <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid #ef4444; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
-            <h4 style="margin-top: 0; color: #ef4444;">Live Calculation Preview</h4>
+        <div style="background: rgba(153, 27, 27, 0.08); border: 1.5px solid var(--danger-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+            <h4 style="margin-top: 0; color: var(--danger-color);">Live Calculation Preview</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
                 <div>
                     <span class="text-secondary" style="font-size: 0.9em;">Total Calculated Emission:</span>
@@ -79,12 +79,12 @@
                 </div>
                 <div>
                     <span class="text-secondary" style="font-size: 0.9em;">Required Carbon Credits:</span>
-                    <div style="font-size: 1.2em; font-weight: bold; color: #ef4444;" id="preview_credits">0.00 Credits</div>
+                    <div style="font-size: 1.2em; font-weight: bold; color: var(--danger-color);" id="preview_credits">0.00 Credits</div>
                 </div>
             </div>
         </div>
 
-        <button type="submit" class="btn" style="width: 100%; font-size: 1.1em; background: #ef4444; color: white; border: none; padding: 1rem; border-radius: 4px; cursor: pointer; transition: opacity 0.2s;">Submit Emission Report & Verify</button>
+        <button type="submit" class="btn" style="width: 100%; font-size: 1.1em; background: var(--danger-color); color: white; border: none; padding: 1rem; border-radius: 4px; cursor: pointer; transition: opacity 0.2s;">Submit Emission Report & Verify</button>
     </form>
 </div>
 

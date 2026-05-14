@@ -2,16 +2,17 @@
 
 :root {
     --bg-color: #0f172a;
-    --surface-color: rgba(255, 255, 255, 0.35);
-    --surface-border: rgba(255, 255, 255, 0.45);
-    --primary-color: #065f46;
-    --primary-hover: #047857;
+    --surface-color: rgba(255, 255, 255, 0.4);
+    --surface-border: rgba(255, 255, 255, 0.5);
+    --primary-color: #064e3b;
+    --primary-hover: #065f46;
     --text-primary: #0f172a;
-    --text-secondary: #334155;
+    --text-secondary: #1e293b;
+    --text-muted: #475569;
     --danger-color: #991b1b;
     --warning-color: #92400e;
     --info-color: #075985;
-    --glass-bg: rgba(255, 255, 255, 0.35);
+    --glass-bg: rgba(255, 255, 255, 0.4);
     --glass-blur: blur(24px);
     --background-color: var(--bg-color);
     --input-bg: rgba(255, 255, 255, 0.95);
@@ -38,11 +39,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
-    background-color: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.25rem 2.5rem;
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .nav-brand {
@@ -59,15 +61,18 @@ body {
 }
 
 .nav-links a {
-    color: #374151;
+    color: #1e293b;
     text-decoration: none;
-    margin-left: 1.5rem;
-    font-weight: 600;
+    margin-left: 2rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     transition: color 0.3s;
 }
 
 .nav-links a:hover {
-    color: var(--text-primary);
+    color: var(--primary-color);
 }
 
 /* Professional Nav Buttons */
@@ -157,10 +162,11 @@ h3, h4 {
 
 label {
     display: block;
-    margin-bottom: 0.6rem;
-    color: #1f2937;
-    font-size: 0.95rem;
-    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #1e293b;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
 }
 
 input[type="text"],
@@ -266,20 +272,24 @@ input:disabled, textarea:disabled, select:disabled {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--surface-border);
-    border-radius: 16px;
-    padding: 2rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    padding: 2.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.05),
+        0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
 .card:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.45);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.15),
+        0 15px 25px rgba(0, 0, 0, 0.1);
 }
 
 .card strong, .card h3 {

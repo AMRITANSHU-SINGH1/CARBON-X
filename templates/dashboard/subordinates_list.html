@@ -6,6 +6,11 @@
         background: url("{{ url_for('static', filename='images/admin.png') }}") no-repeat center center fixed;
         background-size: cover;
     }
+    .btn-edit {
+        background: #90EE90 !important;
+        color: black !important;
+        border: 1px solid #66bb6a !important;
+    }
 </style>
 <div class="dashboard-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -38,7 +43,7 @@
                     <td style="padding: 1rem;">{{ sub.subordinate_profile.district if sub.subordinate_profile else 'N/A' }}</td>
                     <td style="padding: 1rem;">{{ sub.created_at.strftime('%Y-%m-%d') }}</td>
                     <td style="padding: 1rem;">
-                        <a href="{{ url_for('dashboard.edit_subordinate', sub_id=sub.id) }}" class="btn" style="padding: 0.25rem 0.75rem; font-size: 0.9em; width: auto; background: var(--primary-color);">Edit</a>
+                        <a href="{{ url_for('dashboard.edit_subordinate', sub_id=sub.id) }}" class="btn btn-edit" style="padding: 0.25rem 0.75rem; font-size: 0.9em; width: auto;">Edit</a>
                     </td>
                 </tr>
                 {% else %}

@@ -1,10 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/admin.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+    .back-btn {
+        background: #90EE90 !important;
+        color: black !important;
+        border: 1px solid #66bb6a !important;
+    }
+</style>
 <div class="dashboard-container" style="max-width: 900px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h2><span style="color: var(--primary-color)">Carbon</span> Assessment Form</h2>
-        <a href="{{ url_for('dashboard.tasks') }}" class="btn" style="width: auto; padding: 0.5rem 1rem; background: var(--surface-border)">Back to Tasks</a>
+        <a href="{{ url_for('dashboard.tasks') }}" class="btn back-btn" style="width: auto; padding: 0.5rem 1rem;">Back to Tasks</a>
     </div>
 
     <!-- Client Info -->

@@ -6,6 +6,22 @@
         background: url("{{ url_for('static', filename='images/admin.png') }}") no-repeat center center fixed;
         background-size: cover;
     }
+    .process-btn,
+    button.process-btn {
+        background: #90EE90 !important;
+        color: black !important;
+        border: 1px solid #66bb6a !important;
+    }
+    .company-badge {
+        background: #90EE90 !important;
+        color: black !important;
+        border: 1px solid #66bb6a !important;
+        padding: 4px 12px;
+        border-radius: 99px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-block;
+    }
 </style>
 <div class="dashboard-container" style="max-width: 1200px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -36,7 +52,7 @@
                     <tr style="border-bottom: 1px solid var(--surface-border);">
                         <td style="padding: 1rem;">
                             {% if task.company_id %}
-                                <span class="status-badge status-approved" style="background: var(--primary-color); color: var(--background-color);">Company</span>
+                                <span class="company-badge">Company</span>
                             {% else %}
                                 <span class="status-badge status-pending" style="background: var(--secondary-color); color: var(--background-color);">Landowner</span>
                             {% endif %}
@@ -68,7 +84,7 @@
                         </td>
                         <td style="padding: 1rem;">
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                                <a href="{{ url_for('dashboard.process_task', task_id=task.id) }}" class="btn" style="padding: 0.5rem 1rem; width: auto; font-size: 0.9em;">Process Task</a>
+                                <a href="{{ url_for('dashboard.process_task', task_id=task.id) }}" class="btn process-btn" style="padding: 0.5rem 1rem; width: auto; font-size: 0.9em;">Process Task</a>
                                 <button type="button"
                                     class="btn btn-reject"
                                     style="padding: 0.5rem 1rem; width: auto; font-size: 0.9em; background: #ef4444; border: none; cursor: pointer;"
@@ -108,7 +124,7 @@
                     <tr style="border-bottom: 1px solid var(--surface-border);">
                         <td style="padding: 1rem;">
                             {% if task.company_id %}
-                                <span class="status-badge" style="background: var(--surface-border); text-transform: none;">Company</span>
+                                <span class="company-badge">Company</span>
                             {% else %}
                                 <span class="status-badge" style="background: var(--surface-border); text-transform: none;">Landowner</span>
                             {% endif %}

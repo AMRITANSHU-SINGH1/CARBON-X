@@ -47,6 +47,26 @@ body {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
+.hero-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+}
+/* Professional text styling for hero section */
+.hero-glass h1 {
+  color: var(--text-primary);
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+.hero-glass p {
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
 .nav-brand {
     display: flex;
     align-items: center;
@@ -209,24 +229,67 @@ input:disabled, textarea:disabled, select:disabled {
 }
 
 .btn {
-    display: inline-block;
-    width: 100%;
-    padding: 0.8rem 1rem;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-    color: #f1f5f9;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 2rem;
+    background: #f3f4f6; /* Light gray */
+    color: #000000 !important;
     text-decoration: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+    border: 2px solid #0f766e; /* Deep teal border */
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.15);
+    letter-spacing: 0.01em;
 }
 
 .btn:hover {
+    background: #047857; /* Darker emerald on hover */
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(6, 78, 59, 0.2);
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(6, 78, 59, 0.3), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background: #1e293b;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
+.btn-secondary:hover {
+    background: #0f172a;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.3);
+}
+
+.btn:disabled {
+    background: #94a3b8;
+    color: #f1f5f9 !important;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.7;
 }
 
 .flash-messages {

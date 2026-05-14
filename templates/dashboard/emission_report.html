@@ -4,7 +4,7 @@
 <div class="dashboard-container" style="max-width: 900px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h2><span style="color: var(--primary-color)">Emission</span> Investigation Report</h2>
-        <a href="{{ url_for('dashboard.tasks') }}" class="btn" style="width: auto; padding: 0.5rem 1rem; background: var(--surface-border)">Back to Tasks</a>
+        <a href="{{ url_for('dashboard.tasks') }}" class="btn btn-secondary">Back to Tasks</a>
     </div>
 
     <!-- Target Identification Info -->
@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn" style="width: 100%; font-size: 1.1em; background: var(--danger-color); color: white; border: none; padding: 1rem; border-radius: 4px; cursor: pointer; transition: opacity 0.2s;">Submit Emission Report & Verify</button>
+        <button type="submit" class="btn" style="width: 100%; font-size: 1.1em; background: var(--danger-color); padding: 1rem;">Submit Emission Report & Verify</button>
     </form>
 </div>
 

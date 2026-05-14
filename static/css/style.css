@@ -2,14 +2,17 @@
 
 :root {
     --bg-color: #0f172a;
-    --surface-color: #1e293b;
-    --surface-border: #334155;
+    --surface-color: rgba(255, 255, 255, 0.2);
+    --surface-border: rgba(255, 255, 255, 0.3);
     --primary-color: #10b981;
     --primary-hover: #059669;
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-blur: blur(16px);
+    --background-color: var(--bg-color);
 }
 
 * {
@@ -32,29 +35,65 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: rgba(30, 41, 59, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--surface-border);
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav-brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    height: 100%;
     text-decoration: none;
-    letter-spacing: 1px;
+}
+
+.logo-img {
+    height: 40px; /* Adjust as needed for professional scaling */
+    width: auto;
+    display: block;
 }
 
 .nav-links a {
-    color: var(--text-secondary);
+    color: #374151;
     text-decoration: none;
     margin-left: 1.5rem;
-    font-weight: 500;
+    font-weight: 600;
     transition: color 0.3s;
 }
 
 .nav-links a:hover {
     color: var(--text-primary);
+}
+
+/* Professional Nav Buttons */
+.btn-nav-primary {
+    background-color: var(--primary-color);
+    color: #f1f5f9 !important;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-nav-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-nav-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary) !important;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-nav-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 main {
@@ -66,22 +105,26 @@ main {
 }
 
 .auth-container, .form-container {
-    background-color: var(--surface-color);
+    background: var(--surface-color);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     padding: 2.5rem;
-    border-radius: 12px;
+    border-radius: 16px;
     width: 100%;
     max-width: 480px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     border: 1px solid var(--surface-border);
 }
 
 .dashboard-container {
-    background-color: var(--surface-color);
+    background: var(--surface-color);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     padding: 2.5rem;
-    border-radius: 12px;
+    border-radius: 16px;
     width: 100%;
     max-width: 1000px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     border: 1px solid var(--surface-border);
 }
 
@@ -110,11 +153,11 @@ select {
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 8px;
-    background-color: #0f172a;
-    border: 1px solid var(--surface-border);
-    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #111827;
     font-size: 1rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: all 0.3s;
     appearance: none;
 }
 
@@ -131,7 +174,7 @@ input:focus, textarea:focus {
     width: 100%;
     padding: 0.8rem 1rem;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-    color: white;
+    color: #f1f5f9;
     border: none;
     border-radius: 8px;
     font-size: 1rem;
@@ -188,10 +231,18 @@ input:focus, textarea:focus {
 }
 
 .card {
-    background-color: rgba(30, 41, 59, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--surface-border);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 1.5rem;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-4px);
 }
 
 .text-center { text-align: center; }

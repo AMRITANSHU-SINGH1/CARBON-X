@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        {% set bg_img = 'company.png' if role == 'company' else 'land_bg.png' if role == 'landowner' else 'index.png' %}
+        background: url("{{ url_for('static', filename='images/' + bg_img) }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="dashboard-container">
     <h2><span style="color: var(--primary-color)">Audit</span> Ledger</h2>
     <p class="text-secondary" style="text-align: center; margin-bottom: 2rem;">
@@ -49,7 +56,7 @@
                             {% set tier_bg = 'linear-gradient(135deg, #C0C0C0, #A9A9A9)' %}
                         {% elif 'Tier 3' in tier %}
                             {% set tier_bg = 'linear-gradient(135deg, #CD7F32, #8B4513)' %}
-                            {% set tier_color = '#fff' %}
+                            {% set tier_color = '#000000' %}
                         {% endif %}
                         <span style="background: {{ tier_bg }}; color: {{ tier_color }}; padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.8em; font-weight: 600; white-space: nowrap;">{{ tier }}</span>
                     </td>

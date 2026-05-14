@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/company.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="auth-container">
     <h2>Company Onboarding</h2>
     <p class="text-center mb-4 text-secondary">Register to track and offset carbon emissions.</p>

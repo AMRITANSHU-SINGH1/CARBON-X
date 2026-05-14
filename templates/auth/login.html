@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/index.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="auth-container">
     <h2>Welcome Back to Carbon-X</h2>
     <p class="text-center mb-4 text-secondary">Login to your centralized tracking dashboard.</p>

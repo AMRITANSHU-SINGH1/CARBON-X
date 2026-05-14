@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/land_bg.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="form-container">
     <h2>{% if is_resubmission %}Resubmit{% else %}Green Cover{% endif %} Verification</h2>
     <p class="text-center mb-4 text-secondary">Please submit your green cover and satellite coordinates for validation.</p>

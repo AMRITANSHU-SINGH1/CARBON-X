@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/company.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="form-container">
     <h2>{% if is_resubmission %}Resubmit{% else %}Company Emission{% endif %} Verification</h2>
     <p class="text-center mb-4 text-secondary">Please submit your carbon emission data for validation by our ecosystem administrators.</p>

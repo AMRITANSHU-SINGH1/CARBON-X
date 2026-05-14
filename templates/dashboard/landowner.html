@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/land_bg.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="dashboard-container">
     <h2><span style="color: var(--primary-color)">Landowner</span> Dashboard</h2>
     <p class="text-secondary">Welcome, {{ profile.full_name }}</p>
@@ -109,7 +115,7 @@
                     {% set tier_bg = 'linear-gradient(135deg, #C0C0C0, #A9A9A9)' %}
                 {% elif credit.market_tier and 'Tier 3' in credit.market_tier %}
                     {% set tier_bg = 'linear-gradient(135deg, #CD7F32, #8B4513)' %}
-                    {% set tier_color = '#fff' %}
+                    {% set tier_color = '#000000' %}
                 {% endif %}
                 
                 <div style="margin-top: 1rem; padding: 0.5rem 1rem; border-radius: 20px; background: {{ tier_bg }}; color: {{ tier_color }}; font-weight: 600; font-size: 0.9em; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">

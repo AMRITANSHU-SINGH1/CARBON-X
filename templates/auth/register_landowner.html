@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/land_bg.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="auth-container">
     <h2>Landowner Registration</h2>
     <p class="text-center mb-4 text-secondary">Register to list and tokenize your carbon credits.</p>

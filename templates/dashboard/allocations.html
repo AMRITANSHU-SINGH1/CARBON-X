@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/admin.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="dashboard-container" style="max-width: 1200px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2><span style="color: var(--primary-color)">Task</span> Allocations</h2>

@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/company.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
 <div class="dashboard-container">
     <h2><span style="color: var(--primary-color)">Carbon-X</span> Marketplace</h2>
     <p class="text-secondary">Browse and purchase verified carbon credits to offset your emissions.</p>
@@ -46,7 +52,7 @@
                     {% set tier_bg = 'linear-gradient(135deg, #C0C0C0, #A9A9A9)' %}
                 {% elif credit.market_tier and 'Tier 3' in credit.market_tier %}
                     {% set tier_bg = 'linear-gradient(135deg, #CD7F32, #8B4513)' %}
-                    {% set tier_color = '#fff' %}
+                    {% set tier_color = '#000000' %}
                 {% endif %}
                 
                 <div style="position: absolute; top: -12px; right: 15px; background: {{ tier_bg }}; color: {{ tier_color }}; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">

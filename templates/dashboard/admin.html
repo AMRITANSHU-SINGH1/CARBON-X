@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2><span style="color: var(--primary-color)">Admin</span> Overview</h2>
+        <div>
+            <a href="{{ url_for('auth.register_subordinate') }}" class="btn" style="width: auto; padding: 0.5rem 1rem;">+ Add Subordinate</a>
+        </div>
+    </div>
+    
+    <p class="text-secondary mt-4">Welcome to the Ecosystem Administration terminal. Here you can govern the entire marketplace.</p>
+    
+    <div class="card-grid">
+        <div class="card">
+            <h3>Companies Directory</h3>
+            <p class="text-secondary mt-4">View and manage all registered companies and their authorization statuses.</p>
+            <a href="{{ url_for('dashboard.companies_list') }}" class="btn mt-4" style="background: var(--surface-border); display: inline-block; text-align: center;">View Companies</a>
+        </div>
+        <div class="card">
+            <h3>Subordinates</h3>
+            <p class="text-secondary mt-4">Manage regional validators and ecosystem delegates.</p>
+            <a href="{{ url_for('dashboard.subordinates_list') }}" class="btn mt-4" style="background: var(--surface-border); display: inline-block; text-align: center;">View Subordinates</a>
+        </div>
+        <div class="card">
+            <h3>Task Allocation</h3>
+            <p class="text-secondary mt-4">Assign verification tasks to subordinates by region.</p>
+            <a href="{{ url_for('dashboard.allocations') }}" class="btn mt-4" style="background: var(--primary-color); color: var(--background-color); display: inline-block; text-align: center;">Allocate Tasks</a>
+        </div>
+        <div class="card">
+            <h3>Allocated Tasks List</h3>
+            <p class="text-secondary mt-4">View and track the status of all assigned verification tasks.</p>
+            <a href="{{ url_for('dashboard.allocated_tasks') }}" class="btn mt-4" style="background: var(--surface-border); display: inline-block; text-align: center;">View Allocated Tasks</a>
+        </div>
+        <div class="card">
+            <h3>Landowners Directory</h3>
+            <p class="text-secondary mt-4">Manage registered landowners and their carbon credit claims.</p>
+            <a href="{{ url_for('dashboard.landowners_list') }}" class="btn mt-4" style="background: var(--surface-border); display: inline-block; text-align: center;">View Landowners</a>
+        </div>
+        <div class="card">
+            <h3>Platform Analytics</h3>
+            <p class="text-secondary mt-4">View total traded credits and ecosystem health.</p>
+            <button class="btn mt-4" style="background: var(--surface-border)">Open Reports</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

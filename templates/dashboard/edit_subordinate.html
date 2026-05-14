@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2><span style="color: var(--primary-color)">Edit</span> Subordinate</h2>
+        <a href="{{ url_for('dashboard.subordinates_list') }}" class="btn" style="width: auto; padding: 0.5rem 1rem; background: var(--surface-border)">Back to List</a>
+    </div>
+    
+    <p class="text-secondary mt-4">Update information for subordinate ID: {{ subordinate.unique_id }}</p>
+    
+    <div class="card mt-4" style="max-width: 600px; margin: 0 auto;">
+        <form method="POST" action="{{ url_for('dashboard.edit_subordinate', sub_id=subordinate.id) }}">
+            <div class="form-group">
+                <label for="username">Username (Cannot be changed)</label>
+                <input type="text" id="username" name="username" value="{{ subordinate.username }}" disabled style="background: var(--surface-border); cursor: not-allowed;">
+            </div>
+            
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" value="{{ subordinate.subordinate_profile.full_name if subordinate.subordinate_profile else '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ subordinate.email }}" required>
+            </div>
+            
+            <div class="form-group" style="display: flex; gap: 1rem;">
+                <div style="flex: 1;">
+                    <label for="state-select">State</label>
+                    <select id="state-select" required>
+                        <option value="" disabled>-- Select State --</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label for="district-select">District</label>
+                    <select id="district-select" name="district" required data-prefill="{{ subordinate.subordinate_profile.district if subordinate.subordinate_profile else '' }}">
+                        <option value="" disabled>-- Select District --</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">New Password (leave blank to keep current)</label>
+                <input type="password" id="password" name="password" placeholder="Enter new password to change">
+            </div>
+            
+            <button type="submit" class="btn mt-4">Save Changes</button>
+        </form>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/address_selector.js') }}"></script>
+{% endblock %}

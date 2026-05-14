@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container" style="max-width: 900px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2><span style="color: var(--primary-color)">Carbon</span> Assessment Form</h2>
+        <a href="{{ url_for('dashboard.tasks') }}" class="btn" style="width: auto; padding: 0.5rem 1rem; background: var(--surface-border)">Back to Tasks</a>
+    </div>
+
+    <!-- Client Info -->
+    <div class="card" style="margin-bottom: 2rem; background: rgba(0, 0, 0, 0.2);">
+        <h3>Landowner Details</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+            <div>
+                <p class="text-secondary" style="font-size: 0.85em; margin-bottom: 0.2rem;">Full Name</p>
+                <strong>{{ task.landowner.landowner_profile.full_name }}</strong>
+            </div>
+            <div>
+                <p class="text-secondary" style="font-size: 0.85em; margin-bottom: 0.2rem;">Username</p>
+                <strong>{{ task.landowner.username }}</strong>
+            </div>
+            <div style="grid-column: 1 / -1;">
+                <p class="text-secondary" style="font-size: 0.85em; margin-bottom: 0.2rem;">Location (Address)</p>
+                <strong>{{ task.landowner.landowner_profile.address or 'N/A' }}</strong>
+            </div>
+            <div>
+                <p class="text-secondary" style="font-size: 0.85em; margin-bottom: 0.2rem;">City / District</p>
+                <strong>{{ task.landowner.landowner_profile.district or 'N/A' }}</strong>
+            </div>
+            <div>
+                <p class="text-secondary" style="font-size: 0.85em; margin-bottom: 0.2rem;">State</p>
+                <strong>Madhya Pradesh</strong>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('dashboard.process_task', task_id=task.id) }}" class="card" id="assessmentForm">
+        
+        <!-- Project Context -->
+        <h3 style="margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--surface-border);">1. Project Context</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+                <label for="landowner_id_display" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Landowner ID</label>
+                <input type="text" id="landowner_id_display" value="{{ task.landowner.unique_id }}" readonly style="width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.2); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-secondary); cursor: not-allowed;">
+                <input type="hidden" name="land_name" value="Landowner {{ task.landowner.unique_id }} Parcel">
+            </div>
+            <div class="form-group">
+                <label for="total_area" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Total Area (Hectares) <span style="color:#ef4444">*</span></label>
+                <input type="number" step="0.01" min="0.01" id="total_area" name="total_area" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+            </div>
+        </div>
+
+        <!-- Tree Inventory -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--surface-border);">
+            <h3 style="margin: 0;">2. Tree Inventory</h3>
+            <button type="button" class="btn" onclick="addTreeRow()" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.9em; background: var(--surface-border);">+ Add Species</button>
+        </div>
+        
+        <div id="tree_rows_container">
+            <!-- Dynamic rows will go here -->
+        </div>
+
+        <!-- Operational Emissions -->
+        <h3 style="margin-top: 2rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--surface-border);">3. Operational Emissions (Deductions)</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+                <label for="nitrogen_fertilizer" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Total Nitrogen Fertilizer (kg)</label>
+                <input type="number" step="0.01" min="0" id="nitrogen_fertilizer" name="nitrogen_fertilizer" value="0" style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+            </div>
+            <div class="form-group">
+                <label for="diesel_liters" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Total Diesel Fuel Used (Liters)</label>
+                <input type="number" step="0.01" min="0" id="diesel_liters" name="diesel_liters" value="0" style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+            </div>
+        </div>
+
+        <!-- Credit Integrity Audit -->
+        <h3 style="margin-top: 2rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--surface-border);">4. Credit Integrity Audit</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+                <label for="additionality" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Additionality (1-5) <span style="color:#ef4444">*</span><br><small style="font-weight: normal;">Does this project provide carbon benefits that wouldn't happen otherwise? (5 = High, 1 = Low)</small></label>
+                <select id="additionality" name="additionality" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+                    <option value="" disabled selected>Select score...</option>
+                    <option value="5">5 - High Additionality</option>
+                    <option value="4">4 - Moderately High</option>
+                    <option value="3">3 - Moderate</option>
+                    <option value="2">2 - Moderately Low</option>
+                    <option value="1">1 - Low Additionality</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="permanence" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Permanence (1-5) <span style="color:#ef4444">*</span><br><small style="font-weight: normal;">Is there a low risk of the carbon being released? (5 = Very Low Risk, 1 = High Risk)</small></label>
+                <select id="permanence" name="permanence" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+                    <option value="" disabled selected>Select score...</option>
+                    <option value="5">5 - Very Low Risk</option>
+                    <option value="4">4 - Low Risk</option>
+                    <option value="3">3 - Moderate Risk</option>
+                    <option value="2">2 - High Risk</option>
+                    <option value="1">1 - Very High Risk</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="biodiversity" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Biodiversity (1-5) <span style="color:#ef4444">*</span><br><small style="font-weight: normal;">Does the land support diverse native species? (5 = High Diversity, 1 = Monoculture)</small></label>
+                <select id="biodiversity" name="biodiversity" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+                    <option value="" disabled selected>Select score...</option>
+                    <option value="5">5 - High Diversity</option>
+                    <option value="4">4 - Good Diversity</option>
+                    <option value="3">3 - Moderate Diversity</option>
+                    <option value="2">2 - Low Diversity</option>
+                    <option value="1">1 - Monoculture</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="precision" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Precision (1-5) <span style="color:#ef4444">*</span><br><small style="font-weight: normal;">How accurate were the measurements? (5 = Scientific Tools, 1 = Rough Estimate)</small></label>
+                <select id="precision" name="precision" required style="width: 100%; padding: 0.8rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);">
+                    <option value="" disabled selected>Select score...</option>
+                    <option value="5">5 - Scientific Tools Used</option>
+                    <option value="4">4 - Standard Tools Used</option>
+                    <option value="3">3 - Moderate Accuracy</option>
+                    <option value="2">2 - Low Accuracy</option>
+                    <option value="1">1 - Rough Estimate</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Live Calculation Preview -->
+        <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid var(--primary-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+            <h4 style="margin-top: 0; color: var(--primary-color);">Live Calculation Preview</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                <div>
+                    <span class="text-secondary" style="font-size: 0.9em;">Gross Carbon Credits:</span>
+                    <div style="font-size: 1.2em; font-weight: bold;" id="preview_gross">0.00 tCO2e</div>
+                </div>
+                <div>
+                    <span class="text-secondary" style="font-size: 0.9em;">Net Marketable Credits:</span>
+                    <div style="font-size: 1.2em; font-weight: bold; color: var(--primary-color);" id="preview_net">0.00 tCO2e</div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; font-size: 1.1em;">Submit Assessment & Mint Credits</button>
+    </form>
+</div>
+
+<!-- Template for a tree row -->
+<template id="tree_row_template">
+    <div class="tree-row" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 1rem; padding: 1rem; background: rgba(0,0,0,0.1); border-radius: 4px;">
+        <div class="form-group">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85em; color: var(--text-secondary);">Species Name</label>
+            <input type="text" name="species_name[]" placeholder="e.g. Teak" required style="width: 100%; padding: 0.6rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+        </div>
+        <div class="form-group">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85em; color: var(--text-secondary);">Count</label>
+            <input type="number" name="tree_count[]" min="1" required style="width: 100%; padding: 0.6rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+        </div>
+        <div class="form-group">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85em; color: var(--text-secondary);">Avg DBH (cm)</label>
+            <input type="number" step="0.1" name="avg_dbh[]" min="0.1" required style="width: 100%; padding: 0.6rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+        </div>
+        <div class="form-group">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85em; color: var(--text-secondary);">Avg Height (m)</label>
+            <input type="number" step="0.1" name="avg_height[]" min="0.1" required style="width: 100%; padding: 0.6rem; background: var(--background-color); border: 1px solid var(--surface-border); border-radius: 4px; color: var(--text-color);" oninput="updateLivePreview()">
+        </div>
+        <button type="button" class="btn" onclick="removeTreeRow(this)" style="background: #ef4444; padding: 0.6rem 1rem; width: auto; height: 42px;">Remove</button>
+    </div>
+</template>
+
+<script>
+    const WOOD_DENSITY = {
+        'teak': 0.65, 'neem': 0.72, 'mango': 0.60,
+        'eucalyptus': 0.55, 'bamboo': 0.40, 'peepal': 0.58,
+        'banyan': 0.60, 'sheesham': 0.77, 'sal': 0.80,
+        'pine': 0.45, 'oak': 0.60, 'sandalwood': 0.90,
+        'mahogany': 0.70, 'acacia': 0.75, 'arjun': 0.68,
+    };
+    const DEFAULT_DENSITY = 0.60;
+
+    function addTreeRow() {
+        const container = document.getElementById('tree_rows_container');
+        const template = document.getElementById('tree_row_template');
+        const clone = template.content.cloneNode(true);
+        container.appendChild(clone);
+        updateLivePreview();
+    }
+
+    function removeTreeRow(btn) {
+        const row = btn.closest('.tree-row');
+        row.remove();
+        updateLivePreview();
+    }
+
+    function updateLivePreview() {
+        const rows = document.querySelectorAll('.tree-row');
+        let totalCarbonStock = 0;
+
+        rows.forEach(row => {
+            const speciesInput = row.querySelector('input[name="species_name[]"]').value.toLowerCase().trim();
+            const countInput = parseFloat(row.querySelector('input[name="tree_count[]"]').value) || 0;
+            const dbhInput = parseFloat(row.querySelector('input[name="avg_dbh[]"]').value) || 0;
+            const heightInput = parseFloat(row.querySelector('input[name="avg_height[]"]').value) || 0;
+
+            if (countInput > 0 && dbhInput > 0 && heightInput > 0) {
+                const rho = WOOD_DENSITY[speciesInput] || DEFAULT_DENSITY;
+                const agb = 0.0673 * Math.pow((rho * Math.pow(dbhInput, 2) * heightInput), 0.976);
+                const carbonStock = (agb * 1.25) * 0.5 * countInput;
+                totalCarbonStock += carbonStock;
+            }
+        });
+
+        const grossCredits = totalCarbonStock * 3.67;
+        const fertilizer = parseFloat(document.getElementById('nitrogen_fertilizer').value) || 0;
+        const diesel = parseFloat(document.getElementById('diesel_liters').value) || 0;
+
+        const buffer = grossCredits * 0.15;
+        const fertilizerEmission = fertilizer * 5.35;
+        const dieselEmission = diesel * 2.68;
+
+        let netCredits = grossCredits - buffer - fertilizerEmission - dieselEmission;
+        if (netCredits < 0) netCredits = 0;
+
+        document.getElementById('preview_gross').innerText = grossCredits.toFixed(2) + " tCO2e";
+        document.getElementById('preview_net').innerText = netCredits.toFixed(2) + " tCO2e";
+    }
+
+    // Add one row by default when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        addTreeRow();
+    });
+</script>
+
+{% endblock %}

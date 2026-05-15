@@ -6,6 +6,11 @@
         background: url("{{ url_for('static', filename='images/company.png') }}") no-repeat center center fixed;
         background-size: cover;
     }
+    input[type="number"].qty-input {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #d1d5db !important;
+    }
 </style>
 <div class="dashboard-container">
     <h2><span style="color: var(--primary-color)">Carbon-X</span> Marketplace</h2>
@@ -84,7 +89,7 @@
                 {% if required_credits > 0 %}
                 <form action="{{ url_for('dashboard.execute_purchase', credit_id=credit.id) }}" method="POST" onsubmit="return validatePurchase(this, {{ credit.left_carbon_credits or 0.0 }});">
                     <div style="display: flex; gap: 0.5rem; align-items: stretch;">
-                        <input type="number" name="quantity" step="0.01" min="0.01" max="{{ credit.left_carbon_credits or 0.0 }}" placeholder="Qty" style="width: 80px; padding: 0.5rem; border: 1px solid var(--surface-border); border-radius: 4px; background: var(--background-color); color: var(--text-color);" required>
+                        <input type="number" name="quantity" step="0.01" min="0.01" max="{{ credit.left_carbon_credits or 0.0 }}" placeholder="Qty" class="qty-input" style="width: 80px; padding: 0.5rem; border-radius: 4px;" required>
                         <button type="submit" class="btn" style="flex: 1; padding: 0.5rem; margin-top: 0;">Purchase</button>
                     </div>
                 </form>

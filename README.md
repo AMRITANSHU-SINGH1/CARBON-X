@@ -1,4 +1,4 @@
-CarbonX: Decentralized Carbon Credit Marketplace 🌍🌱
+# CarbonX: Decentralized Carbon Credit Marketplace 🌍🌱
 
 Overview
 

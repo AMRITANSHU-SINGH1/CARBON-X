@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/land_bg.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
+<div class="auth-container">
+    <h2>Landowner Registration</h2>
+    <p class="text-center mb-4 text-secondary">Register to list and tokenize your carbon credits.</p>
+    
+    <form method="POST" action="{{ url_for('auth.register_landowner') }}">
+        <div class="form-group">
+            <label for="full_name">Full Name / Organization</label>
+            <input type="text" id="full_name" name="full_name" required>
+        </div>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="aadhaar_card_id">Aadhaar Card ID</label>
+            <input type="text" id="aadhaar_card_id" name="aadhaar_card_id" pattern="\d{12}" title="Please enter a valid 12-digit Aadhaar number" required>
+        </div>
+        <div class="form-group" style="display: flex; gap: 1rem;">
+            <div style="flex: 1;">
+                <label for="state-select">State</label>
+                <select id="state-select" required>
+                    <option value="" disabled selected>-- Select State --</option>
+                </select>
+            </div>
+            <div style="flex: 1;">
+                <label for="district-select">District</label>
+                <select id="district-select" name="district" required>
+                    <option value="" disabled selected>-- Select District --</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="address">Full Address</label>
+            <textarea id="address" name="address" rows="3" required style="resize: vertical;"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn mt-4">Create Account & Proceed</button>
+    </form>
+</div>
+<script src="{{ url_for('static', filename='js/address_selector.js') }}"></script>
+{% endblock %}

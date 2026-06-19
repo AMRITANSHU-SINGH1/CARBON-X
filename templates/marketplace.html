@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/company.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+    input[type="number"].qty-input {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #d1d5db !important;
+    }
+</style>
+<div class="dashboard-container">
+    <h2><span style="color: var(--primary-color)">Carbon-X</span> Marketplace</h2>
+    <p class="text-secondary">Browse and purchase verified carbon credits to offset your emissions.</p>
+
+    <!-- Header Section: Wallet Balance & Remaining Debt -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; margin-bottom: 3rem;">
+        <!-- Wallet Balance Card -->
+        <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px; padding: 1.5rem;">
+            <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.05em;">Available Funds</p>
+            <h3 style="font-size: 2.2rem; margin: 0; color: var(--primary-color);">₹ {{ "{:,.2f}".format(wallet_balance or 0.0) }}</h3>
+        </div>
+
+        <!-- Remaining Debt Card -->
+        <div style="background: var(--surface-border); border-radius: 8px; padding: 1.5rem;">
+            <p class="text-secondary" style="margin-bottom: 0.5rem; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.05em;">Carbon Debt (Required Credits)</p>
+            {% if required_credits > 0 %}
+                <h3 style="font-size: 2.2rem; margin: 0; color: #ef4444;">{{ "{:,.2f}".format(required_credits or 0.0) }} <span style="font-size: 1rem; color: var(--text-secondary); font-weight: normal;">tCO2e</span></h3>
+            {% else %}
+                <h3 style="font-size: 1.8rem; margin: 0; color: var(--primary-color);">🎉 Carbon Neutral</h3>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if required_credits <= 0 %}
+        <div class="alert alert-success" style="margin-bottom: 3rem; text-align: center; padding: 2rem;">
+            <h3 style="margin-bottom: 0.5rem;">Congratulations! You are Carbon Neutral.</h3>
+            <p style="margin: 0;">You have successfully offset all your reported emissions.</p>
+        </div>
+    {% endif %}
+
+    <!-- Credit Marketplace Grid -->
+    <h3 style="margin-bottom: 1.5rem;">Available Credits</h3>
+    
+    {% if credits %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+        {% for credit in credits %}
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; position: relative; padding-top: 2rem;">
+                
+                <!-- Tier Badge -->
+                {% set tier_bg = 'linear-gradient(135deg, #FFD700, #DAA520)' %}
+                {% set tier_color = '#000' %}
+                {% if credit.market_tier and 'Tier 2' in credit.market_tier %}
+                    {% set tier_bg = 'linear-gradient(135deg, #C0C0C0, #A9A9A9)' %}
+                {% elif credit.market_tier and 'Tier 3' in credit.market_tier %}
+                    {% set tier_bg = 'linear-gradient(135deg, #CD7F32, #8B4513)' %}
+                    {% set tier_color = '#000000' %}
+                {% endif %}
+                
+                <div style="position: absolute; top: -12px; right: 15px; background: {{ tier_bg }}; color: {{ tier_color }}; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    {{ credit.market_tier or 'Standard' }}
+                </div>
+
+                <!-- Card Content -->
+                <div>
+                    <h4 style="margin-top: 0.5rem; margin-bottom: 0.2rem;">{{ credit.landowner.landowner_profile.full_name }}</h4>
+                    <p class="text-secondary" style="font-size: 0.85em; margin-bottom: 1rem;">📍 {{ credit.landowner.landowner_profile.district }}</p>
+                    
+                    <div style="background: var(--surface-border); padding: 0.8rem; border-radius: 6px; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+                            <span class="text-secondary" style="font-size: 0.9em;">Rating:</span>
+                            <span style="font-weight: 600;">{{ credit.rating or 'Unrated' }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span class="text-secondary" style="font-size: 0.9em;">Quality:</span>
+                            <span style="font-weight: 600;">{{ "%.1f"|format(credit.quality_score) if credit.quality_score else 'N/A' }} / 5.0</span>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.9em; margin-bottom: 0.5rem;"><span class="text-secondary">Available Stock:</span> <strong style="color: var(--primary-color);">{{ "{:,.2f}".format(credit.left_carbon_credits or 0.0) }} tCO2e</strong></p>
+                    
+                    <h3 style="margin-top: 1rem; margin-bottom: 1.5rem; color: var(--primary-color);">₹ {{ "{:,.2f}".format(credit.price_per_credit or 0.0) }} <span style="font-size: 0.9rem; font-weight: normal; color: var(--text-secondary);">/ Credit</span></h3>
+                </div>
+
+                <!-- Purchase Form -->
+                {% if required_credits > 0 %}
+                <form action="{{ url_for('dashboard.execute_purchase', credit_id=credit.id) }}" method="POST" onsubmit="return validatePurchase(this, {{ credit.left_carbon_credits or 0.0 }});">
+                    <div style="display: flex; gap: 0.5rem; align-items: stretch;">
+                        <input type="number" name="quantity" step="0.01" min="0.01" max="{{ credit.left_carbon_credits or 0.0 }}" placeholder="Qty" class="qty-input" style="width: 80px; padding: 0.5rem; border-radius: 4px;" required>
+                        <button type="submit" class="btn" style="flex: 1; padding: 0.5rem; margin-top: 0;">Purchase</button>
+                    </div>
+                </form>
+                {% else %}
+                <button class="btn" style="background: var(--surface-border); color: var(--text-secondary); cursor: not-allowed; width: 100%; margin-top: 0;" disabled>Purchase Locked</button>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="alert alert-info">
+            There are currently no active carbon credits available in the marketplace. Please check back later.
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function validatePurchase(form, maxAvailable) {
+    const qtyInput = form.querySelector('input[name="quantity"]');
+    const qty = parseFloat(qtyInput.value);
+    
+    if (isNaN(qty) || qty <= 0) {
+        alert('Please enter a valid quantity greater than zero.');
+        return false;
+    }
+    
+    if (qty > maxAvailable) {
+        alert('You cannot purchase more than the available stock (' + maxAvailable.toFixed(2) + ' credits).');
+        return false;
+    }
+    
+    return confirm('Confirm purchase of ' + qty + ' credits?');
+}
+</script>
+{% endblock %}

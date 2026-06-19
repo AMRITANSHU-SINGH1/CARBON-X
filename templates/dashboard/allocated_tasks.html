@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: url("{{ url_for('static', filename='images/admin.png') }}") no-repeat center center fixed;
+        background-size: cover;
+    }
+</style>
+<div class="dashboard-container" style="max-width: 1200px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2><span style="color: var(--primary-color)">Allocated</span> Tasks List</h2>
+        <a href="{{ url_for('dashboard.index') }}" class="btn" style="width: auto; padding: 0.5rem 1rem; background: var(--surface-border)">Back to Dashboard</a>
+    </div>
+    
+    <p class="text-secondary mt-4">Overview of all verification tasks allocated to subordinates and their current statuses.</p>
+    
+    <div style="margin-top: 2rem;">
+        <div class="card" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--surface-border);">
+                        <th style="padding: 1rem;">Task Type</th>
+                        <th style="padding: 1rem;">Subordinate Name</th>
+                        <th style="padding: 1rem;">Client Name</th>
+                        <th style="padding: 1rem;">Location</th>
+                        <th style="padding: 1rem;">Due Date</th>
+                        <th style="padding: 1rem;">Status</th>
+                        <th style="padding: 1rem;">Rejection Reason</th>
+                        <th style="padding: 1rem;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr style="border-bottom: 1px solid var(--surface-border);">
+                        <td style="padding: 1rem;">
+                            {% if task.company_id %}
+                                <span class="status-badge" style="background: var(--surface-border); text-transform: none;">Company</span>
+                            {% else %}
+                                <span class="status-badge" style="background: var(--surface-border); text-transform: none;">Landowner</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem;">
+                            <strong>{{ task.subordinate.subordinate_profile.full_name if task.subordinate and task.subordinate.subordinate_profile else 'N/A' }}</strong>
+                        </td>
+                        <td style="padding: 1rem;">
+                            {% if task.company_id %}
+                                <strong>{{ task.company.company_profile.company_name if task.company and task.company.company_profile else 'N/A' }}</strong>
+                            {% else %}
+                                <strong>{{ task.landowner.landowner_profile.full_name if task.landowner and task.landowner.landowner_profile else 'N/A' }}</strong>
+                                {% if task.landowner and task.landowner.landowner_profile and task.landowner.landowner_profile.aadhaar_card_id %}
+                                    <br><span style="font-size: 0.85em; color: var(--text-secondary)">Aadhaar: {{ task.landowner.landowner_profile.aadhaar_card_id }}</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem;">
+                            {% if task.company_id %}
+                                {{ task.company.company_profile.district if task.company and task.company.company_profile else 'N/A' }}
+                            {% else %}
+                                {{ task.landowner.landowner_profile.district if task.landowner and task.landowner.landowner_profile else 'N/A' }}
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem;">
+                            {% if task.due_date %}
+                                {{ task.due_date.strftime('%Y-%m-%d') }}
+                            {% else %}
+                                <span class="text-secondary">No due date</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem;">
+                            {% if task.status in ('assigned', 'in_progress') %}
+                                <span class="status-badge status-pending" style="text-transform: none;">Pending</span>
+                            {% elif task.status == 'submitted' %}
+                                <span class="status-badge" style="background: #3b82f6; color: white; text-transform: none;">Submitted</span>
+                            {% elif task.status in ('completed', 'approved') %}
+                                <span class="status-badge status-approved" style="text-transform: none;">Approved</span>
+                            {% elif task.status == 'rejected' %}
+                                <span class="status-badge" style="background: #ef4444; color: white; text-transform: none;">
+                                    Rejected{% if task.rejected_by %} (by {{ task.rejected_by }}){% endif %}
+                                </span>
+                            {% else %}
+                                <span class="status-badge" style="background: var(--surface-border); text-transform: none;">{{ task.status | capitalize }}</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem; max-width: 180px;">
+                            {% if task.rejection_reason %}
+                                <span style="font-size: 0.85em; color: #ef4444;">{{ task.rejection_reason }}</span>
+                            {% else %}
+                                <span class="text-secondary" style="font-size: 0.85em;">—</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem;">
+                            {% if task.status not in ('rejected', 'completed', 'approved') %}
+                                <button type="button"
+                                    class="btn"
+                                    style="padding: 0.5rem 1rem; width: auto; font-size: 0.9em; background: #ef4444; border: none; cursor: pointer;"
+                                    onclick="openAdminRejectModal({{ task.id }})">
+                                    Reject
+                                </button>
+                            {% else %}
+                                <span class="text-secondary" style="font-size: 0.85em;">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No allocated tasks found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Rejection Modal -->
+<div id="adminRejectModal" style="display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+    <div style="background: var(--surface-color, #1a1a2e); border: 1px solid var(--surface-border); border-radius: 12px; padding: 2rem; max-width: 480px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <h3 style="margin-bottom: 0.5rem; color: #ef4444;">⚠ Reject Verification Task</h3>
+        <p class="text-secondary" style="font-size: 0.9em; margin-bottom: 1.5rem;">Provide a reason for rejection. This will be visible to the assigned subordinate and the client (company/landowner).</p>
+        <form id="adminRejectForm" method="POST" action="">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="admin_rejection_reason" style="display:block; margin-bottom:0.5rem; color: var(--text-secondary);">Rejection Reason <span style="color:#ef4444;">*</span></label>
+                <textarea id="admin_rejection_reason" name="rejection_reason" rows="4" required
+                    placeholder="e.g. Data discrepancy found, reassignment needed, incorrect subordinate assigned..."
+                    style="width:100%; padding:0.8rem; background:var(--background-color); border:1px solid #ef4444; border-radius:6px; color:var(--text-color); font-family:inherit; resize:vertical;"></textarea>
+            </div>
+            <div style="display:flex; gap:1rem;">
+                <button type="submit" class="btn" style="background:#ef4444; flex:1;">Confirm Rejection</button>
+                <button type="button" class="btn" onclick="closeAdminRejectModal()" style="background:var(--surface-border); flex:1;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAdminRejectModal(taskId) {
+    document.getElementById('adminRejectForm').action = '/dashboard/task/' + taskId + '/admin_reject';
+    const modal = document.getElementById('adminRejectModal');
+    modal.style.display = 'flex';
+    document.getElementById('admin_rejection_reason').value = '';
+    document.getElementById('admin_rejection_reason').focus();
+}
+function closeAdminRejectModal() {
+    document.getElementById('adminRejectModal').style.display = 'none';
+}
+document.getElementById('adminRejectModal').addEventListener('click', function(e) {
+    if (e.target === this) closeAdminRejectModal();
+});
+</script>
+{% endblock %}

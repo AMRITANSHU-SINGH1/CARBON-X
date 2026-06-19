@@ -43,6 +43,7 @@ Demand Side (Companies): Features a secure trading portal. Companies purchase fr
 Retirement Engine: Once Required_credits hit 0.0, the system automatically issues a verifiable SHA-256 Carbon Neutral certificate.
 
 🖥️ System Interfaces
+
 ### Homepage 
 ![Home Page View](assets/Home.png)
 *Home Page*
@@ -59,6 +60,7 @@ Retirement Engine: Once Required_credits hit 0.0, the system automatically issue
 ![Market Place view ](assets/MarketPlace.png)
 *Real-time Market Place .*
 
+### Demo At (https://drive.google.com/file/d/1oZzV4lRrp_2l-ER2pZVaJeUFPROAVDMm/view?usp=drive_link)
 🛠️ Tech Stack & Database Schema
 
 Backend: Python, Flask (Factory Pattern & Blueprints)
@@ -79,7 +81,7 @@ CarbonCredit, CarbonTransaction (Ledger)
 
 1. Clone the repository
 
-git clone [https://github.com/yourusername/CarbonX.git](https://github.com/yourusername/CarbonX.git)
+git clone [https://github.com/AMRITANSHU-SINGH1/CARBON-X.git](https://github.com/AMRITANSHU-SINGH1/CARBON-X.git)
 cd CarbonX
 
 

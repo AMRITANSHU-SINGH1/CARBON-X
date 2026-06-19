@@ -1,10 +1,10 @@
 # CarbonX: Decentralized Carbon Credit Marketplace 🌍🌱
 
-Overview
+## Overview
 
 CarbonX is a scalable, decentralized ecosystem designed to bridge the gap between verified green-cover landowners and enterprise companies striving for carbon neutrality. Built with a modular Flask backend, this platform automates the end-to-end lifecycle of carbon offsetting: from on-site biomass verification and algorithmic credit generation to secure marketplace transactions and cryptographic certificate issuance.
 
-🌟 Key Technical Highlights
+## 🌟 Key Technical Highlights
 
 Advanced Algorithmic Processing: * Carbon Sequestration Engine: Implements Above Ground Biomass (AGB) calculations utilizing specific wood density mappings (ρ), Diameter at Breast Height (DBH), and tree height to accurately compute gross/net tCO2e.
 
@@ -16,7 +16,7 @@ Snapshot Audit Ledger: Transactions use point-in-time snapshotting (seller_old_c
 
 Cryptographic Verification: Generates unique, mathematically verifiable Carbon Neutrality Certificates using SHA-256 hashing.
 
-🏗️ System Architecture & Workflows
+## 🏗️ System Architecture & Workflows
 
 1. Administrative Control Module (admin)
 
@@ -42,7 +42,7 @@ Demand Side (Companies): Features a secure trading portal. Companies purchase fr
 
 Retirement Engine: Once Required_credits hit 0.0, the system automatically issues a verifiable SHA-256 Carbon Neutral certificate.
 
-🖥️ System Interfaces
+## 🖥️ System Interfaces
 
 ### Homepage 
 ![Home Page View](assets/Home.png)
@@ -60,8 +60,9 @@ Retirement Engine: Once Required_credits hit 0.0, the system automatically issue
 ![Market Place view ](assets/MarketPlace.png)
 *Real-time Market Place .*
 
-### Demo At (https://drive.google.com/file/d/1oZzV4lRrp_2l-ER2pZVaJeUFPROAVDMm/view?usp=drive_link)
-🛠️ Tech Stack & Database Schema
+#### Demo At (https://drive.google.com/file/d/1oZzV4lRrp_2l-ER2pZVaJeUFPROAVDMm/view?usp=drive_link)
+
+## 🛠️ Tech Stack & Database Schema
 
 Backend: Python, Flask (Factory Pattern & Blueprints)
 
@@ -77,7 +78,7 @@ VerificationTask, CarbonAssessment, EmissionReport
 
 CarbonCredit, CarbonTransaction (Ledger)
 
-🚀 Local Setup & Installation
+## 🚀 Local Setup & Installation
 
 1. Clone the repository
 
@@ -87,11 +88,11 @@ cd CarbonX
 
 2. Create and activate a virtual environment
 
-# Windows
+#### Windows
 python -m venv venv
 venv\Scripts\activate
 
-# macOS/Linux
+#### macOS/Linux
 python3 -m venv venv
 source venv/bin/activate
 
@@ -119,7 +120,7 @@ python app.py
 
 The ecosystem will be live at http://127.0.0.1:5000
 
-🔮 Future Architecture Roadmap
+## 🔮 Future Architecture Roadmap
 
 PostgreSQL Migration: Full transition to PostgreSQL utilizing advanced indexing for high-frequency marketplace trading.
 

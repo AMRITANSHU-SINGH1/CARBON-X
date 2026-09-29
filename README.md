@@ -1,8 +1,8 @@
-# CarbonX: Decentralized Carbon Credit Marketplace 🌍🌱
+# CarbonX: Centralized Carbon Credit Marketplace 🌍🌱
 
 ## Overview
 
-CarbonX is a scalable, decentralized ecosystem designed to bridge the gap between verified green-cover landowners and enterprise companies striving for carbon neutrality. Built with a modular Flask backend, this platform automates the end-to-end lifecycle of carbon offsetting: from on-site biomass verification and algorithmic credit generation to secure marketplace transactions and cryptographic certificate issuance.
+CarbonX is a scalable, Centralized ecosystem designed to bridge the gap between verified green-cover landowners and enterprise companies striving for carbon neutrality. Built with a modular Flask backend, this platform automates the end-to-end lifecycle of carbon offsetting: from on-site biomass verification and algorithmic credit generation to secure marketplace transactions and cryptographic certificate issuance.
 
 ## 🌟 Key Technical Highlights
 

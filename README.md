@@ -1,4 +1,4 @@
-# CarbonX: Centralized Carbon Credit Marketplace 🌍🌱
+# CarbonX: Centralized Carbon Credit & Emission Tracking System 🌍🌱
 
 ## Overview
 
